@@ -50,8 +50,8 @@ addLayer("E", {
             done() {return player[this.layer].total.gte('1e6')}, 
             effectDescription: "unlock E chal.",
         },
-        3: {requirementDescription: "1e17 total E",
-            done() {return player[this.layer].total.gte('1e17')}, 
+        3: {requirementDescription: "3e16 total E",
+            done() {return player[this.layer].total.gte('3e16')}, 
             effectDescription: "E12 ^1.5,unlock another chal.",
         },
         4: {requirementDescription: "1e27 total E",
@@ -148,7 +148,7 @@ addLayer("E", {
         22: {
             title:'E7',
             description: "E upg boost pts.<br>(e^3x).",
-            cost:new Decimal('4e4'),
+            cost:new Decimal('2.5e4'),
             effect()  { 
                 let a=player.E.upgrades.length
                 let ef = Decimal.pow(20.09,a)
@@ -162,7 +162,7 @@ addLayer("E", {
         23: {
             title:'E8',
             description: "E upg boost E.<br>(1.2^x).",
-            cost:new Decimal('6e4'),
+            cost:new Decimal('4e4'),
             effect()  { 
                 let a=player.E.upgrades.length
                 let efe8 = Decimal.pow(1.2,a)
@@ -192,7 +192,7 @@ addLayer("E", {
         32: {
             title:'E12',
             description: "boost to E base on B.",
-            cost:new Decimal('2.5e8'),
+            cost:new Decimal('1.6e8'),
             effect()  { 
                 let ef = player.B.points.add(10).log(10).div(300)
                 if (hasMilestone('E',3)) ef = Decimal.pow(ef,1.5)
@@ -210,13 +210,13 @@ addLayer("E", {
         34: {
             title:'E14',
             description: "Bb5 is stronger.<br> (+2%)",
-            cost:new Decimal('4e11'),
+            cost:new Decimal('3e11'),
             unlocked() { return (hasUpgrade(this.layer, 33))},
         },
         35: {
             title:'E15',
             description: "boost to E base on A.",
-            cost:new Decimal('4e13'),
+            cost:new Decimal('3e13'),
             effect()  { 
                 let ef = player.A.points.add(10).log(10).div(500)
                 if (hasUpgrade('E',41)) ef = Decimal.pow(ef,1.5)
@@ -234,19 +234,19 @@ addLayer("E", {
         42: {
             title:'E17',
             description: "Eb1-2 base +1.",
-            cost:new Decimal('1e20'),
+            cost:new Decimal('6e19'),
             unlocked() { return (hasUpgrade(this.layer, 41))},
         },
         43: {
             title:'E18',
             description: "Bb1-2 are cheaper.<br>(^0.992,after scaling)",
-            cost:new Decimal('3e23'),
+            cost:new Decimal('5e22'),
             unlocked() { return (hasUpgrade(this.layer, 42))},
         },
         44: {
             title:'E19',
             description: "E2 ^1.5",
-            cost:new Decimal('7e25'),
+            cost:new Decimal('1e25'),
             unlocked() { return (hasUpgrade(this.layer, 43))},
         },
         45: {
@@ -338,7 +338,7 @@ addLayer("E", {
         goal(){
             if (challengeCompletions('E',11) == 0) return Decimal.pow(10,6020);
             if (challengeCompletions('E',11) == 1) return Decimal.pow(10,6380);
-            if (challengeCompletions('E',11) == 2) return Decimal.pow(10,7300);
+            if (challengeCompletions('E',11) == 2) return Decimal.pow(10,7240);
         },            
         goalDescription:  function() {return format(this.goal())+' points'},
         canComplete(){return player.points.gte(this.goal())},
@@ -357,11 +357,11 @@ addLayer("E", {
             completionLimit: 3,
             challengeDescription: function() {
                 return "Bb1-2's base are stuck at 2. <br> Completion: " +challengeCompletions("E", 12) + "/3"},
-            unlocked() { return (hasMilestone("E", 2))},
+            unlocked() { return (hasMilestone("E", 3))},
             goal(){
-                if (challengeCompletions('E',12) == 0) return Decimal.pow(10,8460);
-                if (challengeCompletions('E',12) == 1) return Decimal.pow(10,9030);
-                if (challengeCompletions('E',12) == 2) return Decimal.pow(10,9815);
+                if (challengeCompletions('E',12) == 0) return Decimal.pow(10,8400);
+                if (challengeCompletions('E',12) == 1) return Decimal.pow(10,8875);
+                if (challengeCompletions('E',12) == 2) return Decimal.pow(10,9750);
             },            
             goalDescription:  function() {return format(this.goal())+' points'},
             canComplete(){return player.points.gte(this.goal())},
