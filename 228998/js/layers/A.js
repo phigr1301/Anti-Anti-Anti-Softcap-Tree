@@ -79,7 +79,7 @@ addLayer("A", {
                 if(hasUpgrade("A",51)) efa1=efa1*4000
                 if(hasUpgrade("A",54)) efa1=efa1*3e4
 
-                efa1=Decimal.pow(efa1,buyableEffect("B",14))
+                efa1=Decimal.pow(efa1,buyableEffect("B",22))
                 return efa1
             },
             cost:new Decimal(1),
@@ -203,25 +203,25 @@ addLayer("A", {
         41: {
             title:'A16',
             description: "300x points.",
-            cost:new Decimal('5e30'),
+            cost:new Decimal('3e30'),
             unlocked() { return (hasChallenge(this.layer, 31))},
         },
         42: {
             title:'A17',
             description: "A15 ^1.25.",
-            cost:new Decimal('1.5e33'),
+            cost:new Decimal('1e33'),
             unlocked() { return (hasUpgrade(this.layer, 41))},
         },
         43: {
             title:'A18',
             description: "500x points.",
-            cost:new Decimal('3e36'),
+            cost:new Decimal('2e36'),
             unlocked() { return (hasChallenge(this.layer, 31))},
         },
         44: {
             title:'A19',
             description: "A9 ^1.25.",
-            cost:new Decimal('3e38'),
+            cost:new Decimal('2e38'),
             unlocked() { return (hasUpgrade(this.layer, 43))},
         },
         45: {
@@ -366,7 +366,7 @@ addLayer("A", {
             unlocked() { return (hasMilestone("B", 4))},
             goal(){
                 if (challengeCompletions("A", 41) == 0) return Decimal.pow(10,777);
-                if (challengeCompletions("A", 41) == 1) return Decimal.pow(10,1350);
+                if (challengeCompletions("A", 41) == 1) return Decimal.pow(10,1345);
                 if (challengeCompletions("A", 41) == 2) return Decimal.pow(10,1540);
                 if (challengeCompletions("A", 41) == 3) return Decimal.pow(10,2060);
                 if (challengeCompletions("A", 41) >= 4) return Decimal.pow(10,2620);
@@ -376,8 +376,8 @@ addLayer("A", {
             rewardDescription: "boost to pts base on Bb1-2.",
             rewardEffect() {
                 let a7bas = Decimal.pow(challengeCompletions("A", 41),1.25)
-                let efa7b1 = Decimal.pow(buyableEffect('B',11),Decimal.add(0.12+a7bas/40))
-                let efa7b2 = Decimal.pow(buyableEffect('B',12),Decimal.add(0.12+a7bas/40))
+                let efa7b1 = Decimal.pow(buyableEffect('B',11),0.12+a7bas/40)
+                let efa7b2 = Decimal.pow(buyableEffect('B',12),0.12+a7bas/40)
                 if (challengeCompletions("A", 41) >= 1)  return Decimal.mul(efa7b1,efa7b2)
                 else return new Decimal(1)
             },

@@ -33,6 +33,7 @@ addLayer("C", {
         mult = mult.mul(hasUpgrade('C',25)?5:1)
         mult = mult.mul(hasUpgrade('D',31)?5:1)
         mult = mult.mul(hasUpgrade('A',61)?upgradeEffect('A',61):1)
+        mult = mult.mul(buyableEffect("E",13))
 
         return mult
     },
@@ -103,12 +104,12 @@ addLayer("C", {
             cost: new Decimal(10),
             unlocked() { return (hasUpgrade(this.layer, 12))},
             effect()  { 
-                let efc3 = 0.5
-                if (hasUpgrade('C',23))  efc3 = efc3*1.3
-                if (hasUpgrade('C',24))  efc3 = efc3*1.2
-                if (inChallenge('C',11))  efc3 = 0
-
-                return player[this.layer].points.pow(efc3);          
+                let ef = 0.5
+                if (hasUpgrade('C',23))  ef = ef*1.3
+                if (hasUpgrade('C',24))  ef = ef*1.2
+                if (inChallenge('C',11))  ef = 0
+                if (inChallenge('E',11))  ef = 0
+                return player[this.layer].points.pow(ef);          
             },
             effectDisplay() { return format(this.effect())+"x" }, 
         },
@@ -161,7 +162,7 @@ addLayer("C", {
             completionLimit: 1,
             challengeDescription() {return "points ^0.45,C1-C10 are useless."},
             unlocked() { return (hasUpgrade("D",15))},
-            goalDescription: '1e30 points',
+            goalDescription: '1e38 points',
             canComplete() {return player.points.gte('1e30')},
             rewardDescription: "x2000 points and ^1.01.",
         },
@@ -170,7 +171,7 @@ addLayer("C", {
             completionLimit: 1,
             challengeDescription() {return "D1-D5 are useless."},
             unlocked() { return (hasUpgrade("A",52))},
-            goalDescription: '1e30 points',
+            goalDescription: '1e136 points',
             canComplete() {return player.points.gte('1e30')},
             rewardDescription: "x8000 points,A ^1.025.",
         },

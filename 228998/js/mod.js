@@ -13,13 +13,13 @@ let modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: "0.32",
+	num: "0.34",
 	name: "E",
 }
 
 let changelog = `<h1>Changelog:</h1><br>
-	<h3>v0.03</h3><br>
-		- Added E buyable`
+	<h3>v0.34</h3><br>
+		- Added E chal,E11-20`
 
 let winText = `Congratulations! You have reached the end and beaten this game, but for now...`
 
@@ -59,6 +59,7 @@ function getPointGen() {
 	gain = gain.mul(hasUpgrade("D",32)?upgradeEffect("D",32):1)
 	gain = gain.mul(hasUpgrade("E",11)?upgradeEffect("E",11):1)
 	gain = gain.mul(hasUpgrade("E",12)?upgradeEffect("E",12):1)
+	gain = gain.mul(hasUpgrade("E",22)?upgradeEffect("E",22):1)
 
 	if (inChallenge("A", 11))  gain = gain.pow(0.75)
 	if (inChallenge("A", 21))  gain = gain.pow(0.55)
@@ -83,11 +84,11 @@ function addedPlayerData() { return {
 
 // Display extra things at the top of the page
 var displayThings = [
-	function() {return "current endgame:1e2700 points <br> bilibili: @bili_68585026743"},
+	function() {return "current endgame:1e11500 points,1e29 E<br> bilibili: @bili_68585026743"},
 ]
 // Determines when the game "ends"
 function isEndgame() {
-	return player.points.gte(new Decimal("1e3000"))
+	return player.points.gte(new Decimal("1e11500"))
 }
 
 

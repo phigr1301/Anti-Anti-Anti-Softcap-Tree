@@ -31,6 +31,7 @@ addLayer("D", {
         mult = mult.pow(hasUpgrade(this.layer,22)?1.2:1)
         mult = mult.mul(hasUpgrade('A',52)?2:1)
         mult = mult.mul(hasUpgrade('A',64)?upgradeEffect('A',64):1)
+        mult = mult.mul(buyableEffect("E",13))
 
         return mult
     },
@@ -109,8 +110,9 @@ addLayer("D", {
             cost: new Decimal(150),
             unlocked() { return (hasUpgrade(this.layer, 14))},
             effect()  { 
-                let efd5 = 0.8
-                return player[this.layer].points.pow(efd5);          
+                let ef = 0.8
+                if (inChallenge('E',11))  ef = 0
+                return player[this.layer].points.pow(ef);          
             },
             effectDisplay() { return format(this.effect())+"x" }, 
         },
