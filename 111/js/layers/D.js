@@ -3,7 +3,7 @@ addLayer("D", {
     symbol: "D", 
     position: 1, 
     startData() { return {
-        unlocked: true,
+        unlocked: false,
 		points: new Decimal(0),
     }},
     passiveGeneration(){    let d_pg=100
@@ -53,6 +53,10 @@ addLayer("D", {
             done() {return player[this.layer].total.gte('1e9')}, 
             effectDescription: "1e5x A,unlock a chal.",
         },
+        4: {requirementDescription: "6e666 total D",
+            done() {return player[this.layer].total.gte('6e666')}, 
+            effectDescription: "D17 base +0.05.",
+        },
     },
     microtabs: {
         stuff: {       
@@ -78,13 +82,16 @@ addLayer("D", {
                 '+ format(this.effect()) +'x'},            
             effect()  { 
                 let ef = 1000
+                let exp = 0.4
                 if (hasUpgrade('D',14)) ef = ef*1000
                 if (hasUpgrade('D',22)) ef = ef^1.2
                 if (hasUpgrade('D',25)) ef = ef*10000
                 if (hasUpgrade('D',33)) ef = ef*10000
                 if (hasUpgrade('D',41)) ef = ef*1e7
                 if (inChallenge('C',12)) ef = 1
-                if (hasUpgrade('E',61)) ef=Decimal.pow(ef,1+(buyableEffect("E",21)-1)/2.5)
+                if (hasUpgrade('E',64)) exp=exp+0.1
+                if (hasUpgrade('E',72)) exp=exp+0.1
+                if (hasUpgrade('E',61)) ef=Decimal.pow(ef,1+(buyableEffect("E",21)-1)*exp)
                 return ef;          
             },
             cost:new Decimal(1),
@@ -173,9 +180,9 @@ addLayer("D", {
             description: "logB boost pts.",
             cost:new Decimal(40000),
             effect()  { 
-                let efd12 = player.B.points.add(1).log(10)
-                if (hasUpgrade('D',35)) efd12 = Decimal.pow(efd12,2)
-                return 1+efd12;          
+                let ef = player.B.points.add(1).log(10)
+                if (hasUpgrade('D',35)) ef = Decimal.pow(ef,2)
+                return 1+ef;          
             },
             effectDisplay() { return format(upgradeEffect(this.layer, this.id))+"x" }, 
             unlocked() { return (hasUpgrade(this.layer, 31))},
@@ -203,6 +210,45 @@ addLayer("D", {
             description: "1e7x pts.",
             cost:new Decimal('1e578'),
             unlocked() { return (hasUpgrade('C', 31))},
+        },
+        42: {
+            title:'D17',
+            description: "D upg boost E.<br>(1.25^x).",
+            cost:new Decimal('1e628'),
+            effect()  { 
+                let a=player.D.upgrades.length
+                let bas =1.25
+                if (hasMilestone('D',4)) bas =bas+0.05
+                if (hasUpgrade('E',75)) bas =bas+0.1
+                let ef = Decimal.pow(bas,a)
+                return ef;          
+            },
+            unlocked() { return (hasUpgrade('C', 32))},
+            effectDisplay() { return format(upgradeEffect(this.layer, this.id))+"x" }, 
+        },
+        43: {
+            title:'D18',
+            description: "Eb2 amt boost pts.<br>(1.75^x).",
+            cost:new Decimal('1e648'),
+            effect()  { 
+                let a=getBuyableAmount('E', 12)
+                let ef = Decimal.pow(1.75,a)
+                return ef;          
+            },
+            unlocked() { return (hasUpgrade('C', 33))},
+            effectDisplay() { return format(upgradeEffect(this.layer, this.id))+"x" }, 
+        },
+        44: {
+            title:'D19',
+            description: "Bb5 is cheaper.<br>(^0.98,after scaling)",
+            cost:new Decimal('1e659'),
+            unlocked() { return (hasUpgrade('D', 43))},
+        },
+        45: {
+            title:'D20',
+            description: "E12/E15 ^1.2。",
+            cost:new Decimal('1e684'),
+            unlocked() { return (hasUpgrade('D', 44))},
         },
     }
 })

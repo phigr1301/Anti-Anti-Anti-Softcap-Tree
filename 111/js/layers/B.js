@@ -3,7 +3,7 @@ addLayer("B", {
     symbol: "B", 
     position: 1, // Horizontal position within a row. By default it uses the layer id and sorts in alphabetical order
     startData() { return {
-        unlocked: true,
+        unlocked: false,
 		points: new Decimal(0),
     }},
     passiveGeneration(){    let b_pg=1
@@ -46,6 +46,8 @@ addLayer("B", {
         mult = mult.mul(hasMilestone("B", 6)?100:1)
         mult = mult.mul(hasMilestone("B", 7)?1e5:1)
         mult = mult.mul(buyableEffect("E",12))
+        mult = mult.pow(hasUpgrade("E", 65)?1.004:1)
+        mult = mult.mul(hasUpgrade("E", 82)?upgradeEffect('E',82):1)
 
         return mult
     },
@@ -56,7 +58,8 @@ addLayer("B", {
                 content: [ "upgrades"]}, 
             "Buyables": {
                 unlocked() {return (hasMilestone("D", 2))},
-                content: ["buyables"]},  
+                content: [
+                ["raw-html", () => `<h4 style="opacity:.5">Bbs' cost increase faster above 400 purchases</h4>`],"buyables"]},  
             "Milestones": {
                 unlocked() {return (hasUpgrade("B", 53))},
                 content: ["milestones"]  },
@@ -316,6 +319,7 @@ addLayer("B", {
                 if (hasUpgrade('A',62)) efb26=Decimal.mul(efb26,upgradeEffect('A',62))
                 if (hasUpgrade('E',31)) efb26=Decimal.pow(efb26,1.1)
                 if (hasMilestone('E',8)) efb26=Decimal.pow(efb26,1.05)
+                if (hasMilestone('E',10)) efb26=Decimal.pow(efb26,1.05)
                 return efb26;          
             },
             unlocked() { return (hasUpgrade(this.layer, 55))},
@@ -406,6 +410,7 @@ addLayer("B", {
                     if (hasUpgrade('A',65)) cost =Decimal.pow(cost,x.sub(400).div(950).add(1).pow(0.44))
                     else cost =Decimal.pow(cost,x.sub(400).div(800).add(1).pow(0.45))
                 if (hasUpgrade('E',43)) cost = Decimal.pow(cost, 0.992)
+                if (hasUpgrade('E',73)) cost = Decimal.pow(cost, 0.99)
                 return cost
             },
             canAfford() { return player[this.layer].points.gte(this.cost()) },
@@ -449,6 +454,7 @@ addLayer("B", {
                     if (hasUpgrade('A',65)) cost =Decimal.pow(cost,x.sub(400).div(950).add(1).pow(0.44))
                     else cost =Decimal.pow(cost,x.sub(400).div(800).add(1).pow(0.45))
                 if (hasUpgrade('E',43)) cost = Decimal.pow(cost, 0.992)
+                if (hasUpgrade('E',73)) cost = Decimal.pow(cost, 0.99)
                 return cost
             },
             canAfford() { return player[this.layer].points.gte(this.cost()) },
@@ -475,13 +481,13 @@ addLayer("B", {
         21: {
             title: "Bb3", 
             cost(x) { // cost for buying xth buyable, can be an object if there are multiple currencies
-                let costb3 = Decimal.pow(10, x.pow(1.07)).times('1e41')
-                if (hasUpgrade('B',65))  costb3 = Decimal.pow(10, x.pow(1.065)).times('1e40')
-                if (hasMilestone('B',1)) costb3 = costb3.div(upgradeEffect('B',61))
+                let cost = Decimal.pow(10, x.pow(1.07)).times('1e41')
+                if (hasUpgrade('B',65))  cost = Decimal.pow(10, x.pow(1.065)).times('1e40')
+                if (hasMilestone('B',1)) cost = cost.div(upgradeEffect('B',61))
                 if (x>=400) 
-                    if (hasUpgrade('A',65)) costb3 =Decimal.pow(costb3,x.sub(400).div(950).add(1).pow(0.44))
-                    else costb3 =Decimal.pow(costb3,x.sub(400).div(800).add(1).pow(0.45))
-                return costb3
+                    if (hasUpgrade('A',65)) cost =Decimal.pow(cost,x.sub(400).div(950).add(1).pow(0.44))
+                    else cost =Decimal.pow(cost,x.sub(400).div(800).add(1).pow(0.45))
+                return cost
             },
             canAfford() { return player[this.layer].points.gte(this.cost()) },
             buy() {
@@ -489,11 +495,11 @@ addLayer("B", {
                 else player[this.layer].points = player[this.layer].points.sub(this.cost())
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))},
             effect(x) { // Effects of owning x of the items, x is a decimal
-                let efbb3 = Decimal.pow(x/1.3+1,0.6).div(6).add(0.8333)
-                if (hasUpgrade('B',51)) efbb3 = Decimal.pow(x/1.25+1,0.6).div(4.5).add(0.777)
-                if (hasUpgrade('A',55)) efbb3 = Decimal.pow(x/1.23+1,0.6).div(4).add(0.75)
-                if (inChallenge('A',41)) efbb3= 1
-                return efbb3},
+                let ef = Decimal.pow(x/1.3+1,0.6).div(6).add(0.8333)
+                if (hasUpgrade('B',51)) ef = Decimal.pow(x/1.25+1,0.6).div(4.5).add(0.777)
+                if (hasUpgrade('A',55)) ef = Decimal.pow(x/1.23+1,0.6).div(4).add(0.75)
+                if (inChallenge('A',41)) ef= 1
+                return ef},
             display() { // Everything else displayed in the buyable button after the title
                 return "boost to B's pts mult(exp) \n\
                 Cost: " + format(this.cost()) + " B \n\
@@ -504,13 +510,13 @@ addLayer("B", {
         22: {
             title: "Bb4", 
             cost(x) { // cost for buying xth buyable, can be an object if there are multiple currencies
-                let costb4 = Decimal.pow(16, x.pow(1.07)).times('1e49')
-                if (hasUpgrade('B',65))  costb4 = Decimal.pow(16, x.pow(1.065)).times('1e48')
-                if (hasMilestone('B',1)) costb4 = costb4.div(upgradeEffect('B',61))
+                let cost = Decimal.pow(16, x.pow(1.07)).times('1e49')
+                if (hasUpgrade('B',65))  cost = Decimal.pow(16, x.pow(1.065)).times('1e48')
+                if (hasMilestone('B',1)) cost = cost.div(upgradeEffect('B',61))
                 if (x>=400) 
-                    if (hasUpgrade('A',65)) costb4 =Decimal.pow(costb4,x.sub(400).div(950).add(1).pow(0.44))
-                    else costb4 =Decimal.pow(costb4,x.sub(400).div(800).add(1).pow(0.45))
-                return costb4
+                    if (hasUpgrade('A',65)) cost =Decimal.pow(cost,x.sub(400).div(950).add(1).pow(0.44))
+                    else cost =Decimal.pow(cost,x.sub(400).div(800).add(1).pow(0.45))
+                return cost
             },
             canAfford() { return player[this.layer].points.gte(this.cost()) },
             buy() {
@@ -538,6 +544,7 @@ addLayer("B", {
                 if (x>=400) 
                     if (hasUpgrade('A',65)) cost =Decimal.pow(cost,x.sub(400).div(950).add(1).pow(0.44))
                     else cost =Decimal.pow(cost,x.sub(400).div(800).add(1).pow(0.45))
+                if (hasUpgrade('D',44)) cost = Decimal.pow(cost,0.98)
                 return cost
             },
             canAfford() { return player[this.layer].points.gte(this.cost()) },

@@ -1,7 +1,7 @@
 let modInfo = {
 	name: "Anti-softcap tree",
 	id: "mymod",
-	author: "nobody",
+	author: "2^32",
 	pointsName: "points",
 	modFiles: ["layers/A.js", "layers/B.js","layers/C.js","layers/D.js","layers/E.js","tree.js",],
 
@@ -13,11 +13,15 @@ let modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: "0.3.5.1",
-	name: " ",
+	num: "0.3.7",
+	name: "Emmmm...",
 }
 
 let changelog = `<h1>Changelog:</h1><br>
+    <h3>v0.3.7</h3><br> (240624)
+		- Added Em / rebalance 
+	<h3>v0.3.6</h3><br> (240623)
+		- Added new C/D upg,E11-20
     <h3>v0.3.5.1</h3><br> (240622)
 		- rebalance / Ec3-4,E21-28
     <h3>v0.3.4.1</h3><br> (240620)
@@ -64,6 +68,9 @@ function getPointGen() {
 	gain = gain.mul(hasUpgrade("E",11)?upgradeEffect("E",11):1)
 	gain = gain.mul(hasUpgrade("E",12)?upgradeEffect("E",12):1)
 	gain = gain.mul(hasUpgrade("E",22)?upgradeEffect("E",22):1)
+	gain = gain.mul(hasUpgrade("C",33)?upgradeEffect("C",33):1)
+	gain = gain.mul(hasUpgrade("D",43)?upgradeEffect("D",43):1)
+	gain = gain.mul(hasUpgrade("E",85)?upgradeEffect("E",85):1)
 
 	if (inChallenge("A", 11))  gain = gain.pow(0.75)
 	if (inChallenge("A", 21))  gain = gain.pow(0.55)
@@ -90,11 +97,11 @@ function addedPlayerData() { return {
 
 // Display extra things at the top of the page
 var displayThings = [
-	function() {return "current endgame:1e17450 points,1e54 E"},
+	function() {return "current endgame:1e26100 points,1e119 E"},
 ]
 // Determines when the game "ends"
 function isEndgame() {
-	return player.points.gte(new Decimal("1e17450"))
+	return player.points.gte(new Decimal("1e26100"))
 }
 
 //<br> bilibili: @bili_68585026743

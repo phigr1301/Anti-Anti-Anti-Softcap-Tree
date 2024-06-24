@@ -3,7 +3,7 @@ addLayer("C", {
     symbol: "C", 
     position: 0, 
     startData() { return {
-        unlocked: true,
+        unlocked: false,
 		points: new Decimal(0),
     }},
     passiveGeneration(){    let c_pg=1
@@ -83,13 +83,16 @@ addLayer("C", {
                 '+ format(this.effect()) +'x'},
             effect()  { 
                 let ef = 20
+                let exp = 0.4
                 if (hasUpgrade('C',12)) ef = ef*20
                 if (hasUpgrade('C',15)) ef = ef*200
                 if (hasUpgrade('C',25)) ef = ef*1500
                 if (hasMilestone('C',3)) ef = ef*1000
                 if (hasUpgrade('C',31)) ef = ef*1e7
                 if (inChallenge('C',11))  ef = 1
-                if (hasUpgrade('E',61)) ef=Decimal.pow(ef,1+(buyableEffect("E",21)-1)/2.5)
+                if (hasUpgrade('E',64)) exp=exp+0.1
+                if (hasUpgrade('E',72)) exp=exp+0.1
+                if (hasUpgrade('E',61)) ef=Decimal.pow(ef,1+(buyableEffect("E",21)-1)*exp)
                 return ef;          
             },
             cost:new Decimal(1),
@@ -163,6 +166,44 @@ addLayer("C", {
             description: "1e7x pts.",
             cost:new Decimal('1e2560'),
             unlocked() { return (challengeCompletions("E", 21) >= 2)},
+        },
+        32: {
+            title:'C12',
+            description: "C upg boost E.<br>(1.3^x).",
+            cost:new Decimal('1e2748'),
+            effect()  { 
+                let bas=1.3
+                let a=player.C.upgrades.length
+                if (hasUpgrade('E',75)) bas =bas+0.1
+                let ef = Decimal.pow(bas,a)
+                return ef;          
+            },
+            unlocked() { return (hasUpgrade('E', 64))},
+            effectDisplay() { return format(upgradeEffect(this.layer, this.id))+"x" }, 
+        },
+        33: {
+            title:'C13',
+            description: "Eb1 amt boost pts.<br>(1.5^x).",
+            cost:new Decimal('1e2826'),
+            effect()  { 
+                let a=getBuyableAmount('E', 11)
+                let ef = Decimal.pow(1.5,a)
+                return ef;          
+            },
+            unlocked() { return (hasUpgrade('D', 42))},
+            effectDisplay() { return format(upgradeEffect(this.layer, this.id))+"x" }, 
+        },
+        34: {
+            title:'C14',
+            description: "Eb4 is cheaper.<br>(^0.98,after scaling)",
+            cost:new Decimal('1e2906'),
+            unlocked() { return (hasUpgrade('D', 43))},
+        },
+        35: {
+            title:'C15',
+            description: "E3/E4 ^1.2",
+            cost:new Decimal('1e2996'),
+            unlocked() { return (hasUpgrade('D', 44))},
         },
     },
     challenges: {
