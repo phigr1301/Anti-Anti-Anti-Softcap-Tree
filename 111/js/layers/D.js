@@ -235,7 +235,7 @@ addLayer("D", {
                 let ef = Decimal.pow(1.75,a)
                 return ef;          
             },
-            unlocked() { return (hasUpgrade('C', 33))},
+            unlocked() { return (hasUpgrade('D', 42))},
             effectDisplay() { return format(upgradeEffect(this.layer, this.id))+"x" }, 
         },
         44: {

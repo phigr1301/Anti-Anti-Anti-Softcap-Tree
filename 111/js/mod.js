@@ -3,7 +3,7 @@ let modInfo = {
 	id: "mymod",
 	author: "2^32",
 	pointsName: "points",
-	modFiles: ["layers/A.js", "layers/B.js","layers/C.js","layers/D.js","layers/E.js","tree.js",],
+	modFiles: ["layers/A.js", "layers/B.js","layers/C.js","layers/D.js","layers/E.js","layers/ach.js","tree.js",],
 
 	discordName: "",
 	discordLink: "",
@@ -13,21 +13,25 @@ let modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: "0.3.7",
-	name: "Emmmm...",
+	num: "0.4.2",
+	name: "E finish",
 }
 
 let changelog = `<h1>Changelog:</h1><br>
-    <h3>v0.3.7</h3><br> (240624)
-		- Added Em / rebalance 
-	<h3>v0.3.6</h3><br> (240623)
-		- Added new C/D upg,E11-20
-    <h3>v0.3.5.1</h3><br> (240622)
-		- rebalance / Ec3-4,E21-28
-    <h3>v0.3.4.1</h3><br> (240620)
-		- E6-20 rebalance
-	<h3>v0.3.4</h3><br> (240620)
-		- Added E chal,E11-20`
+    <h3>v0.4.2</h3> (240705)
+		- fix buyable code,a bit rebalance. <br>
+    <h3>v0.4.1</h3> (240701-05)
+		- Added achievements,Ek,Ec5-8,E31-50,etc.<br> And a TOUGH rebalance. <br>
+    <h3>v0.3.7</h3> (240624)
+		- Added Em / rebalance <br>
+	<h3>v0.3.6</h3> (240623)
+		- Added new C/D upg,E11-20<br>
+    <h3>v0.3.5.1</h3> (240622)
+		- rebalance / Ec3-4,E21-28<br>
+    <h3>v0.3.4.1</h3> (240620)
+		- E6-20 rebalance<br>
+	<h3>v0.3.4</h3>(240620)
+		- Added E chal,E11-20<br> `
 
 let winText = `Congratulations! You have reached the end and beaten this game, but for now...`
 
@@ -71,12 +75,15 @@ function getPointGen() {
 	gain = gain.mul(hasUpgrade("C",33)?upgradeEffect("C",33):1)
 	gain = gain.mul(hasUpgrade("D",43)?upgradeEffect("D",43):1)
 	gain = gain.mul(hasUpgrade("E",85)?upgradeEffect("E",85):1)
+	gain = gain.mul(hasUpgrade("E",104)?upgradeEffect("E",104):1)
 
 	if (inChallenge("A", 11))  gain = gain.pow(0.75)
 	if (inChallenge("A", 21))  gain = gain.pow(0.55)
 	if (inChallenge("A", 31))  gain = gain.pow(0.5)
 	if (inChallenge("C", 11))  gain = gain.pow(0.45)
 	if (inChallenge("E", 22))  gain = gain.pow(player.points.add(10).log(10).pow(-0.06))
+	if (inChallenge("E", 32))  gain = gain.pow(player.E.Em.add(10).log(10).pow(-0.2))
+	if (inChallenge("E", 42))  gain = gain.pow(player.points.add(10).log(10).pow(-0.12))
 
 	if (hasChallenge("A", 21))  gain = gain.mul(50)
 	if (hasChallenge("A", 22))  gain = gain.mul(100)
@@ -87,6 +94,7 @@ function getPointGen() {
 	if (hasChallenge("A", 32))  gain = gain.pow(1.01)
 	if (hasChallenge("C", 11))  gain = gain.pow(1.01)
 	if (hasChallenge("E", 21))  gain = gain.mul(challengeEffect('E',21))
+	if (hasChallenge("E", 22))  gain = gain.mul(challengeEffect('E',22))
 
 	return gain
 }
@@ -97,11 +105,11 @@ function addedPlayerData() { return {
 
 // Display extra things at the top of the page
 var displayThings = [
-	function() {return "current endgame:1e26100 points,1e119 E"},
+	function() {return "current endgame:1e140300 points,1e1024 E<br> next layer requires 1e1024 E."},
 ]
 // Determines when the game "ends"
 function isEndgame() {
-	return player.points.gte(new Decimal("1e26100"))
+	return player.points.gte(new Decimal("1e140300"))
 }
 
 //<br> bilibili: @bili_68585026743

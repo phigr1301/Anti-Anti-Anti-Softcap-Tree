@@ -336,7 +336,7 @@ addLayer("A", {
         22: {
             name: "Ac4",
             completionLimit: 1,
-            challengeDescription() {return "A5/A9 are useless"},
+            challengeDescription() {return "A5/A9 are disabled"},
             unlocked() { return (hasUpgrade("B", 35))},
             goalDescription: '5e16 points',
             canComplete() {return player.points.gte('5e16')},
@@ -345,7 +345,7 @@ addLayer("A", {
         31: {
             name: "Ac5",
             completionLimit: 1,
-            challengeDescription() {return "points ^0.5 and A5/A9 are useless"},
+            challengeDescription() {return "points ^0.5 and A5/A9 are disabled"},
             unlocked() { return (hasUpgrade("C", 15))},
             goalDescription: '5e16 points',
             canComplete() {return player.points.gte('5e16')},
@@ -364,14 +364,14 @@ addLayer("A", {
             name: "Ac7",
             completionLimit: 5,
             challengeDescription: function() {
-                return "Bb3-5 do nothing <br> Completion: " +challengeCompletions("A", 41) + "/5"},
+                return "Bb3-5 are disabled <br> Completion: " +challengeCompletions("A", 41) + "/5"},
             unlocked() { return (hasMilestone("B", 4))},
             goal(){
                 if (challengeCompletions("A", 41) == 0) return Decimal.pow(10,777);
                 if (challengeCompletions("A", 41) == 1) return Decimal.pow(10,1325);
                 if (challengeCompletions("A", 41) == 2) return Decimal.pow(10,1540);
                 if (challengeCompletions("A", 41) == 3) return Decimal.pow(10,2024);
-                if (challengeCompletions("A", 41) >= 4) return Decimal.pow(10,2620);
+                if (challengeCompletions("A", 41) >= 4) return Decimal.pow(10,2600);
             },            
             goalDescription:  function() {return format(this.goal())+' points'},
             canComplete() {return player.points.gte(this.goal())},

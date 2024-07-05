@@ -34,6 +34,7 @@ addLayer("C", {
         mult = mult.mul(hasUpgrade('D',31)?5:1)
         mult = mult.mul(hasUpgrade('A',61)?upgradeEffect('A',61):1)
         mult = mult.mul(buyableEffect("E",13))
+        mult = mult.mul(hasUpgrade("E",95)?upgradeEffect("E",95):1)
 
         return mult
     },
@@ -170,7 +171,7 @@ addLayer("C", {
         32: {
             title:'C12',
             description: "C upg boost E.<br>(1.3^x).",
-            cost:new Decimal('1e2748'),
+            cost:new Decimal('1e2760'),
             effect()  { 
                 let bas=1.3
                 let a=player.C.upgrades.length
@@ -184,45 +185,45 @@ addLayer("C", {
         33: {
             title:'C13',
             description: "Eb1 amt boost pts.<br>(1.5^x).",
-            cost:new Decimal('1e2826'),
+            cost:new Decimal('1e2835'),
             effect()  { 
                 let a=getBuyableAmount('E', 11)
                 let ef = Decimal.pow(1.5,a)
                 return ef;          
             },
-            unlocked() { return (hasUpgrade('D', 42))},
+            unlocked() { return (hasUpgrade(this.layer, 32))},
             effectDisplay() { return format(upgradeEffect(this.layer, this.id))+"x" }, 
         },
         34: {
             title:'C14',
             description: "Eb4 is cheaper.<br>(^0.98,after scaling)",
             cost:new Decimal('1e2906'),
-            unlocked() { return (hasUpgrade('D', 43))},
+            unlocked() { return (hasUpgrade(this.layer, 33))},
         },
         35: {
             title:'C15',
             description: "E3/E4 ^1.2",
             cost:new Decimal('1e2996'),
-            unlocked() { return (hasUpgrade('D', 44))},
+            unlocked() { return (hasUpgrade(this.layer, 34))},
         },
     },
     challenges: {
         11: {
             name: "Cc1",
             completionLimit: 1,
-            challengeDescription() {return "points ^0.45,C1-C10 are useless."},
+            challengeDescription() {return "points ^0.45,C1-C10 are disabled."},
             unlocked() { return (hasUpgrade("D",15))},
             goalDescription: '1e38 points',
-            canComplete() {return player.points.gte('1e30')},
+            canComplete() {return player.points.gte('1e38')},
             rewardDescription: "x2000 points and ^1.01.",
         },
         12: {
             name: "Cc2",
             completionLimit: 1,
-            challengeDescription() {return "D1-D5 are useless."},
+            challengeDescription() {return "D1-D5 are disabled."},
             unlocked() { return (hasUpgrade("A",52))},
             goalDescription: '1e136 points',
-            canComplete() {return player.points.gte('1e30')},
+            canComplete() {return player.points.gte('1e136')},
             rewardDescription: "x8000 points,A ^1.025.",
         },
     }
