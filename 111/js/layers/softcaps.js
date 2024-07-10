@@ -71,7 +71,7 @@ addLayer("s", {
   ["display-text",function() {if(upgradeEffect('A',11).gte(1e30)&&hasUpgrade('A',11)) return "Sc37: Decrease A1's Effect"},],
   ["display-text",function() {if(upgradeEffect('C',13).gte(1e20)&&hasUpgrade('C',13)) return "Sc38: Reduce C3's Effect"},],
   ["display-text",function() {if(upgradeEffect('s',16).gte(10)&&hasUpgrade('s',16)) return "Sc39: Reduce Sc6's Effect"},],
-  ["display-text",function() {if(upgradeEffect('C',11).gte(1e10)&&hasUpgrade('C',11)) return "Sc40: Reduce C1's Effect"},],
+  ["display-text",function() {if(n(upgradeEffect('C',11)).gte(1e10)&&hasUpgrade('C',11)) return "Sc40: Reduce C1's Effect"},],
   ["display-text",function() {if(tmp.C.gainMult.gte(1e5)) return "Sc41: Reduce C's Gainmult"},],
   ["display-text",function() {if(player.s.points.gte(1e3)) return "Sc42: Reduce Softcap Points Gain"},],
   ["display-text",function() {if(getPointGen().gte(1e35)) return "Sc43: Reduce Points Gain"},],
