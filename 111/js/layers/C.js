@@ -106,6 +106,7 @@ addLayer("C", {
     if (hasUpgrade('E',61)) ef=Decimal.pow(ef,1+(buyableEffect("E",21)-1)*exp)
     if(n(ef).gte(1e5)) ef=n(ef).div(1e5).pow(0.4).mul(1e5)//sc28
     if(n(ef).gte(1e10)) ef=n(ef).div(1e10).pow(0.4).mul(1e10)//sc40
+    ef=n(ef)
     return ef;    
       },
       cost:new Decimal(1),
