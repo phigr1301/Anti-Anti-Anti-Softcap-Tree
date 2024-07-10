@@ -9,7 +9,7 @@ addLayer("D", {
     passiveGeneration(){    let d_pg=100
         return (hasMilestone("B", 5))?d_pg:0},
     color: "#720202",
-    requires: new Decimal('1e13'), 
+    requires: new Decimal(1/0), 
     resource: "D", 
     baseResource: "C", 
     baseAmount() {return player.C.points}, 

@@ -13,22 +13,22 @@ addLayer("ac", {
     achievementPopups: true,
     achievements: {
         11: {
-            name: "1.you gotta start somewhere",
+            name: "1.you gotta start softcaps somewhere",
             done() {return player.A.total.gte('1')}, 
             tooltip: "get 1 A", 
         },
         12: {
-            name: "2.constant",
+            name: "2.unconstant",
             done() {return (hasUpgrade("A", 14))},
             tooltip: "get A1-A4", 
         },
         13: {
-            name: "3.self boost",
+            name: "3.dis-self boost",
             done() {return (hasUpgrade("A", 15))},
             tooltip: "get A5",
         },
         14: {
-            name: "4.100 well",
+            name: "4.100 wells",
             done() {return player.A.total.gte('100')},
             tooltip: "get 100 A",
         },
@@ -42,18 +42,23 @@ addLayer("ac", {
             done() {return player.B.total.gte('1')},
             tooltip: "get 1 B",
         },
+        17: {
+            name: "6.5.why not softcaps",
+            done() {return player.softcap.gte('5')},
+            tooltip: "get 5 softcaps",
+        },
         21: {
-            name: "7.constant^2",
+            name: "7.constant^√2",
             done() {return (hasUpgrade("B", 15))},
             tooltip: "get B1-B5",
         },
         22: {
-            name: "8.primary automation",
+            name: "8.primary automation^2",
             done() {return (hasUpgrade("B", 23))},
             tooltip: "get B8", 
         },
         23: {
-            name: "9.challenging",
+            name: "9.not so challenging",
             done() {return (hasUpgrade("B", 25))},
             tooltip: "unlock A chal", 
         },
@@ -69,11 +74,16 @@ addLayer("ac", {
         },
         26: {
             name: "12.Row 1 full",
-            done() {return (hasUpgrade("B", 35))},
-            tooltip: "get B15", 
+            done() {return (hasUpgrade("B", 36))},
+            tooltip: "get B15.5", 
+        },
+        27: {
+            name: "12.5.Struggling for points",
+            done() {return (player.points.gte(1e12))},
+            tooltip: "get 1e12 points.", 
         },
         31: {
-            name: "13.Row 2 why not prestige",
+            name: "13.Row 2 why does prestige",
             done() {return player.C.total.gte('1')},
             tooltip: "unlock C",
         },
@@ -84,13 +94,13 @@ addLayer("ac", {
         },
         33: {
             name: "15.a set of timewall",
-            done() {return (hasUpgrade("A", 45))},
-            tooltip: "get A20", 
+            done() {return (hasUpgrade("A", 46))},
+            tooltip: "get A20.5", 
         },
         34: {
-            name: "16.clickable",
-            done() {return (hasUpgrade("C", 25))},
-            tooltip: "get C10", 
+            name: "16.not clickable",
+            done() {return (hasUpgrade("C", 26))},
+            tooltip: "get C10.5", 
         },
         35: {
             name: "17.why not prestige^3",
@@ -101,6 +111,11 @@ addLayer("ac", {
             name: "18.constant^3",
             done() {return (hasUpgrade("D", 14))},
             tooltip: "get D1-D4", 
+        },
+        37: {
+            name: "18.5.Hyper Reduce",
+            done() {return upgradeEffect('A',11).gte(1e30)},
+            tooltip: "get the first exponential softcap (Sc37)", 
         },
         41: {
             name: "19.hidden upg^2",
