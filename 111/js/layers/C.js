@@ -8,7 +8,7 @@ addLayer("C", {
     }},
     passiveGeneration(){    let c_pg=1
   if(hasMilestone("D", 1)) c_pg=c_pg+1
-  if (hasMilestone("D", 2))  c_pg=c_pg*100
+  if (hasMilestone("D", 2))  c_pg=c_pg*10
   if (hasMilestone("B", 5))  c_pg=c_pg*100
   return (hasUpgrade("C", 21))?c_pg:0},
     color: "#A73E16",
@@ -33,17 +33,22 @@ addLayer("C", {
   mult = mult.mul(hasUpgrade('C',21)?10:1)
   mult = mult.mul(hasUpgrade('C',25)?50:1)
   mult = mult.mul(hasUpgrade('C',26)?10:1)
-  mult = mult.mul(hasUpgrade('D',31)?5:1)
   mult = mult.mul(hasUpgrade('A',61)?upgradeEffect('A',61):1)
   mult = mult.mul(buyableEffect("E",13))
   mult = mult.mul(hasUpgrade("s",16)?upgradeEffect('s',16):1)
+  mult = mult.mul(hasUpgrade("D",26)?upgradeEffect('D',26):1)
   mult = mult.mul(hasUpgrade("E",95)?upgradeEffect("E",95):1)
+  mult = mult.mul(buyableEffect("B",21))
   mult = mult.pow(hasUpgrade('A',45)?1.5:1)
   mult = mult.pow(hasUpgrade('A',46)?1.5:1)
   mult = mult.pow(hasUpgrade('C',24)?1.5:1)
   
   if(mult.gte(10)) mult=mult.div(10).pow(0.5).mul(10)//sc33
   if(mult.gte(1e5)) mult=mult.div(1e5).pow(0.2).mul(1e5)//sc41
+  if(mult.gte(1e9)) mult=mult.div(1e9).pow(0.4).mul(1e9)//sc57
+  if(mult.gte(1e20)) mult=mult.div(1e20).pow(0.3).mul(1e20)//sc67
+  if(mult.gte(1e60)) mult=mult.div(1e60).pow(0.6).mul(1e60)//sc87
+  if(mult.gte(1e100)) mult=mult.div(1e100).pow(0.8).mul(1e100)//sc94
 
   return mult
     },
@@ -240,19 +245,21 @@ addLayer("C", {
   11: {
       name: "Cc1",
       completionLimit: 1,
-      challengeDescription() {return "points ^0.45,C1-C10 are disabled."},
+      challengeDescription() {return "Reset your points and points ^0.45,C1-C10 are disabled."},
       unlocked() { return (hasUpgrade("D",15))},
-      goalDescription: '1e38 points',
-      canComplete() {return player.points.gte('1e38')},
-      rewardDescription: "x2000 points and ^1.01.",
+      goalDescription: '5e18 points.',
+      onEnter() {player.points=n(0)},
+      canComplete() {return player.points.gte(5e18)},
+      rewardDescription: "x1000 points and softcap points ^1.1, unlock more A upgrades.",
   },
   12: {
       name: "Cc2",
       completionLimit: 1,
-      challengeDescription() {return "D1-D5 are disabled."},
+      challengeDescription() {return "Reset your points and D1-D5 are disabled."},
       unlocked() { return (hasUpgrade("A",52))},
-      goalDescription: '1e136 points',
-      canComplete() {return player.points.gte('1e136')},
+      onEnter() {player.points=n(0)},
+      goalDescription: '1e42 points.',
+      canComplete() {return player.points.gte(1e42)},
       rewardDescription: "x8000 points,A ^1.025.",
   },
     }

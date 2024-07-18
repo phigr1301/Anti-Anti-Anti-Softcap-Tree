@@ -19,6 +19,7 @@ addLayer("t", {
     devSpeedCal() {
      let dev=n(1)
      if(gcs('t',11)) dev=n(0)
+     if(isEndgame()) dev=n(0)
      return dev
     },
     update(diff) {
@@ -36,12 +37,26 @@ addLayer("t", {
            canClick() {return true},
            unlocked() {return true},
         },
-    21: {
-    title(){return "Softcaps"},
+    12: {
+    title(){return "Play Time"},
     display() {
-     let a=" aren't "
-     if(gcs('t',21)==1) a=" are "
-     return "Softcaps "+a+"displayed！"
+     let a=" isn't "
+     if(gcs('t',12)==1) a=" is"
+     return "Play time "+a+"displayed！"
+    },
+    onClick() {
+    if(gcs('t',12)==1) setClickableState('t',12,0)
+    else setClickableState('t',12,1)
+    },
+    canClick() {return true},
+    unlocked() {return true},
+        },
+    21: {
+    title(){return "Softcap Amount"},
+    display() {
+     let a=" isn't "
+     if(gcs('t',21)==1) a=" is"
+     return "Softcap Amount "+a+"displayed！"
     },
     onClick() {
     if(gcs('t',21)==1) setClickableState('t',21,0)
@@ -91,6 +106,20 @@ addLayer("t", {
     },
     canClick() {return true},
     unlocked() {return tmp.C.layerShown},
+        },
+    25: {
+    title(){return "D GainMult"},
+    display() {
+     let a=" isn't "
+     if(gcs('t',25)==1) a=" is "
+     return "D's GainMult"+a+"displayed！"
+    },
+    onClick() {
+    if(gcs('t',25)==1) setClickableState('t',25,0)
+    else setClickableState('t',25,1)
+    },
+    canClick() {return true},
+    unlocked() {return tmp.D.layerShown},
         },
    },
 })//Test
