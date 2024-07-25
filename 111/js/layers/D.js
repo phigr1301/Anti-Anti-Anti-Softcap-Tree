@@ -1,4 +1,10 @@
 addLayer("D", {
+ infoboxes: {
+introBox: {
+  title: "D, the time-waller",
+  body(){return "Look at the play time. Let's see if you can complete D in 4 hours."},
+        },
+},
   name: "D", 
   symbol: "D", 
   position: 1, 
@@ -33,7 +39,6 @@ addLayer("D", {
   mult = mult.mul(hasUpgrade('A',61)?upgradeEffect('A',61):1)
   mult = mult.mul(hasUpgrade('D',32)?upgradeEffect('D',32):1)
   mult = mult.mul(buyableEffect("B",22))
-  mult = mult.mul(buyableEffect("E",13))
   
   mult = mult.pow(hasUpgrade('A',52)?1.5:1)
   mult = mult.pow(hasChallenge('A',32)?1.5:1)
@@ -44,6 +49,14 @@ addLayer("D", {
   if(mult.gte(1e30)) mult=mult.div(1e30).pow(0.5).mul(1e30)//sc79
   return mult
   },
+  directMult() {
+     let mult = n(1)
+     mult = mult.mul(buyableEffect("E",13))
+     if(hasUpgrade('E',22)) mult=mult.mul(upgradeEffect('E',22)[1])
+     if(hasUpgrade('s',21)&&hasMilestone('E',6)) mult=mult.mul(upgradeEffect('s',21))
+     if (hasChallenge("E", 22)) mult=mult.mul(challengeEffect('E',22)[1])
+     return mult
+    },
   branches: ['C'],
   canReset() {return !hasMilestone('D',0)},
   resetsNothing() {return true},
@@ -82,8 +95,8 @@ addLayer("D", {
     content: ["challenges"]  },
   }
   },
-  tabFormat: [
-  "main-display",
+  tabFormat: [ ["infobox","introBox"],
+  "main-display","resource-display",
   "prestige-button",
   ["microtabs", "stuff"],
   ["blank", "25px"],
@@ -99,15 +112,14 @@ addLayer("D", {
     if (hasUpgrade('D',25)) ef = ef*10000
     if (hasUpgrade('D',41)) ef = ef*1e7
     if (inChallenge('C',12)) ef = 1
-    if (hasUpgrade('E',64)) exp=exp+0.1
-    if (hasUpgrade('E',72)) exp=exp+0.1
-    if (hasUpgrade('E',61)) ef=Decimal.pow(ef,1+(buyableEffect("E",21)-1)*exp)
     if (hasUpgrade('s',22)) ef=n(ef).pow(upgradeEffect('s',22))
     if (hasUpgrade('D',25)) ef=n(ef).pow(upgradeEffect('D',25))
     ef=n(ef)
     if(ef.gte(1e6)) ef=ef.div(1e6).pow(0.5).mul(1e6)//sc45
     if(ef.gte(1e20)) ef=ef.div(1e20).pow(0.25).mul(1e20)//sc52
     if(ef.log10().gte(100)) ef = n(10).pow(ef.log10().sub(100).pow(0.1).add(100))//sc58
+    if(ef.log10().gte(1e7)) ef = n(10).pow(ef.log10().sub(1e7).pow(0.1).add(1e7))//sc58
+    if(hasUpgrade('s',32)) ef=ef.pow(upgradeEffect('s',32))
     return ef;  
     },
     tooltip:"All the upgrades that multiples points with a static multiplier in this layer are counted in this upgrade.",
@@ -139,7 +151,6 @@ addLayer("D", {
     effect()  { 
     let ef = 0.8
     if (inChallenge('C',12))  ef = 0
-    if (inChallenge('E',11))  ef = 0
     let eff=n(player[this.layer].points.pow(ef))
     if (hasUpgrade('D',23)) eff=eff.pow(2)
     if(eff.gte(1e3)) eff=eff.div(1e3).pow(0.5).mul(1e3)//sc46
@@ -206,6 +217,7 @@ addLayer("D", {
     effect()  { 
     let ef = player.D.points.add(1).pow(0.5).div(1e3).add(1)
     if(hasUpgrade('s',23)) ef=ef.pow(upgradeEffect('s',23))
+    if(hasUpgrade('E',41)) ef=ef.pow(1.1)
     if(ef.gte(1e5)) ef=ef.div(1e5).pow(0.25).mul(1e5)//sc60
     return ef;  
     },
@@ -289,7 +301,7 @@ addLayer("D", {
     title:'D16',
     description: "1e7x pts.",
     cost:new Decimal('1e578'),
-    unlocked() { return (hasUpgrade('C', 31))},
+    unlocked() { return (hasUpgrade('C', 301))},
   },
   42: {
     title:'D17',
@@ -303,7 +315,7 @@ addLayer("D", {
     let ef = Decimal.pow(bas,a)
     return ef;  
     },
-    unlocked() { return (hasUpgrade('C', 32))},
+    unlocked() { return (hasUpgrade('C', 320))},
     effectDisplay() { return format(upgradeEffect(this.layer, this.id))+"x" }, 
   },
   43: {

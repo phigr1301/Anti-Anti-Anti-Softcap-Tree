@@ -1,4 +1,10 @@
 addLayer("B", {
+ infoboxes: {
+introBox: {
+  title: "B",
+  body(){return "…It's quite easy, wasn't it? I hope you will beat these softcaps."},
+        },
+},
   name: "B", 
   symbol: "B", 
   position: 1, 
@@ -6,12 +12,14 @@ addLayer("B", {
   unlocked: false,
 		points: new Decimal(0),
 		pointsAc1: new Decimal(0),
+		Bblim: new Decimal(1000),
   }},
   passiveGeneration(){  let pg=1
   if (hasMilestone("C", 2))  pg=pg+2
   if (hasMilestone("C", 3))  pg=pg*1000
   if (hasMilestone("D", 1))  pg=pg*100
   if (hasMilestone("D", 2))  pg=pg*1000
+  if (hasMilestone("E", 10))  pg=pg*10
   return (hasUpgrade("C", 11))?pg:0},
   color: "#7AAA2C",
   requires: new Decimal(1e4), 
@@ -21,7 +29,9 @@ addLayer("B", {
   type: "normal", 
   exponent: 0.2, 
   gainExp() {
-  return new Decimal(1)
+   let exp=n(1)
+   if(inChallenge('E',22)) exp=n(1).mul(layers.E.challenges[22].nerf())
+  return exp
   },
   row: 0, 
   update(diff) {
@@ -57,12 +67,13 @@ addLayer("B", {
   mult = mult.mul(hasUpgrade("D", 31)?upgradeEffect('D',31):1)  
   mult = mult.mul(hasUpgrade("E", 82)?upgradeEffect('E',82):1)  
   mult = mult.mul(hasUpgrade("E",92)?upgradeEffect("E",92):1)
-  mult = mult.pow(hasUpgrade("E", 65)?1.004:1)
   mult = mult.pow(hasUpgrade("B", 36)?1.1:1)
+  mult = mult.pow(hasUpgrade("C", 34)?1.1:1)
   mult = mult.pow(hasUpgrade("D", 22)?1.2:1)
   mult = mult.pow(hasChallenge("D", 12)?1.35:1)
   mult = mult.pow(hasMilestone("B", 3)?1.15:1)
   mult = mult.pow(hasUpgrade('B',73)?upgradeEffect('B',73):1)
+  if(inChallenge('E',11)) mult=mult.max(10).tetrate(0.1)
 if(mult.gte(10)) mult=mult.div(10).pow(0.5).mul(10)//sc15
 if(mult.gte(1e10)) mult=mult.div(1e10).pow(0.5).mul(1e10)//sc54
 if(mult.gte(1e25)) mult=mult.div(1e25).pow(0.5).mul(1e25)//sc63
@@ -72,6 +83,14 @@ if(mult.gte(1e250)) mult=mult.div(1e250).pow(0.5).mul(1e250)//sc92
 if(mult.log10().gte(400)) mult = n(10).pow(mult.log10().sub(400).pow(0.5).add(400))//sc37
   return mult
   },
+  directMult() {
+     let mult = n(1)
+     mult = mult.mul(buyableEffect("E",12))
+     if(hasUpgrade('E',16)) mult=mult.mul(upgradeEffect('E',16)[1])
+     if(hasUpgrade('s',12)&&hasMilestone('E',6)) mult=mult.mul(upgradeEffect('s',12))
+     if (hasChallenge("E", 21)) mult=mult.mul(challengeEffect('E',21)[1])
+     return mult
+    },
   microtabs: {
   stuff: {   
    "Upgrades": {
@@ -79,15 +98,14 @@ if(mult.log10().gte(400)) mult = n(10).pow(mult.log10().sub(400).pow(0.5).add(40
    content: [ "upgrades"]}, 
    "Buyables": {
    unlocked() {return (hasMilestone("D", 2))},
-   content: [
-   "buyables"]}, 
+   content: [["raw-html", () => `<h4 style="opacity:.5">The purchase limit of B buyables is ` + format(player.B.Bblim)],"buyables"]},
    "Milestones": {
    unlocked() {return (hasUpgrade("B", 53))},
    content: ["milestones"]  },
   }
   },
-  tabFormat: [
-  "main-display",
+  tabFormat: [ ["infobox","introBox"],
+  "main-display","resource-display",,
   "prestige-button",
   ["microtabs", "stuff"],
   ["blank", "25px"],
@@ -193,13 +211,12 @@ if(mult.log10().gte(400)) mult = n(10).pow(mult.log10().sub(400).pow(0.5).add(40
    unlocked() { return (hasUpgrade(this.layer, 15))},
    effect()  { 
    let efb = 0.2
-   
    let ef=player[this.layer].points.pow(efb); 
    if(hasUpgrade('A',44)) ef=ef.pow(15)
    if(ef.gte(2.5)) ef=ef.div(2.5).pow(0.5).mul(2.5)//sc12
    if(ef.gte(1e4)) ef=ef.div(1e4).pow(0.1).mul(1e4)//sc34
    if(ef.gte(1e6)) ef=ef.div(1e6).pow(0.01).mul(1e6)//sc34
-   return ef
+   return ef.max(1)
    },
    effectDisplay() { return format(this.effect())+"x" }, 
   },
@@ -218,7 +235,7 @@ if(mult.log10().gte(400)) mult = n(10).pow(mult.log10().sub(400).pow(0.5).add(40
    if(ef.gte(4)) ef=ef.div(4).pow(0.5).mul(4)//sc13
    if(ef.gte(25)) ef=ef.div(25).pow(0.2).mul(25)//sc21
    if(ef.gte(1e6)) ef=ef.div(1e6).pow(0.1).mul(1e6)//sc27
-   return ef
+   return ef.max(1)
    },
    effectDisplay() { return format(this.effect())+"x" }, 
   },
@@ -394,7 +411,6 @@ if(mult.log10().gte(400)) mult = n(10).pow(mult.log10().sub(400).pow(0.5).add(40
    if (hasUpgrade('B',63)) ef=Decimal.pow(ef,upgradeEffect('B',63))
    if (hasUpgrade('B',64)) ef=Decimal.pow(ef,10)
    if (hasUpgrade('E',31)) ef=Decimal.pow(ef,1.1)
-   if (hasMilestone('E',8)) ef=Decimal.pow(ef,1.05)
    if (hasMilestone('E',10)) ef=Decimal.pow(ef,1.05)
    if (hasUpgrade('E',105)) ef=Decimal.pow(ef,1.05)
    if(ef.gte(1e10)) ef=ef.div(1e10).pow(0.5).mul(1e10)//sc73
@@ -502,6 +518,37 @@ if(mult.log10().gte(400)) mult = n(10).pow(mult.log10().sub(400).pow(0.5).add(40
    cost:new Decimal('2e530'),
    unlocked() { return (hasUpgrade(this.layer, 81))},
   },
+  83: {
+   title:'B38',
+   description: "Eb12 affects Abs.",
+   cost:new Decimal('2.5e692'),
+   unlocked() { return (hasUpgrade("E",64))},
+  },
+  84: {
+   title:'B39',
+   description: "Boost to E directly based on total Bb amount beyond 6300.<br>(with Ab2 effect)",
+   cost:new Decimal('6.97e697'),
+   effect() {
+    let ef=gba('B',11).add(gba('B',12)).add(gba('B',13)).add(gba('B',21)).add(gba('B',22)).add(gba('B',23)).add(buyableEffect('A',12).mul(6)).sub(6300).max(1).pow(0.6)
+    if(ef.gte(10)) ef=ef.div(10).pow(0.5).mul(10)//sc146
+    return ef
+   },
+   tooltip() {return "Amount:"+format(gba('B',11).add(gba('B',12)).add(gba('B',13)).add(gba('B',21)).add(gba('B',22)).add(gba('B',23)).add(buyableEffect('A',12).mul(6)))},
+   effectDisplay() { return format(this.effect())+"x"},
+   unlocked() { return (hasUpgrade("B",83))},
+  },
+  85: {
+   title:'B40',
+   description: "Ec1-4 effect ^1.2.",
+   cost:new Decimal('7e700'),
+   unlocked() { return (hasUpgrade("B",84))},
+  },
+  86: {
+   title:'B40.5',
+   description: "E21, E26, E28 and E30 ^1.5.",
+   cost:new Decimal('2e704'),
+   unlocked() { return (hasUpgrade("B",85))},
+  },
   },
   automate(){
   if (player.B.auto&&hasMilestone("B",2)) {
@@ -519,6 +566,7 @@ if(mult.log10().gte(400)) mult = n(10).pow(mult.log10().sub(400).pow(0.5).add(40
    baseCost() {
     let cost = n(1e23)
     if(hasUpgrade('A',65)) cost=n(1)
+    cost=cost.div(buyableEffect('E',24))
     return cost
    },
    cost(x=player[this.layer].buyables[this.id]) {
@@ -533,15 +581,15 @@ if(mult.log10().gte(400)) mult = n(10).pow(mult.log10().sub(400).pow(0.5).add(40
    if (!this.canAfford()) return;
 			 	let tempBuy = player.B.points.div(this.baseCost()).max(0).max(1).log(4).root(1.2)
    let target = tempBuy.plus(1).floor();
-   player[this.layer].buyables[this.id] = player[this.layer].buyables[this.id].max(target);
+   player[this.layer].buyables[this.id] = player[this.layer].buyables[this.id].max(target).min(player.B.Bblim)
 				},
    base(){   let bas = n(3)
    if (hasUpgrade('D',36)) bas = bas.add(upgradeEffect('D',36))
    if(hasChallenge('D',11)) bas = bas.mul(2)
    
-   if (inChallenge('E',12)) bas = n(2)
-   if (inChallenge('E',31)) bas = n(1.3)
    if(hasUpgrade('A',54)) bas=bas.pow(upgradeEffect('A',54))
+   if (inChallenge('E',12)) bas = n(1)
+   if (inChallenge('E',31)) bas = n(1.3)
    bas=n(bas)
    if(bas.gte(1e5)) bas=bas.div(1e5).pow(0.2).mul(1e5)//sc75
   return bas
@@ -557,6 +605,7 @@ if(mult.log10().gte(400)) mult = n(10).pow(mult.log10().sub(400).pow(0.5).add(40
     let a = format(gba(this.layer,this.id))
     if(gba('A',12).gt(0)) a = a+"+"+format(buyableEffect('A',12))+"="+format(gba(this.layer,this.id).add(buyableEffect('A',12)))
    return "give A a x"+ format(this.base()) + " mult<br>Cost: " + format(this.cost()) + " B<br>Amount: " +  a +"<br>  Effect: x" + format(this.effect()) + " A" },
+   purchaseLimit() {return player.B.Bblim},
    unlocked() { return hasMilestone('D',2) }
   },
   12: {
@@ -564,6 +613,7 @@ if(mult.log10().gte(400)) mult = n(10).pow(mult.log10().sub(400).pow(0.5).add(40
    baseCost() {
     let cost = n(1e31)
     if(hasUpgrade('A',65)) cost=n(1)
+    cost=cost.div(buyableEffect('E',24))
     return cost
    },
    cost(x=player[this.layer].buyables[this.id]) {
@@ -579,7 +629,7 @@ if(mult.log10().gte(400)) mult = n(10).pow(mult.log10().sub(400).pow(0.5).add(40
    if (!this.canAfford()) return;
    let tempBuy = player.B.points.div(this.baseCost()).max(0).max(1).log(2).root(1.25)
    let target = tempBuy.plus(1).floor();
-   player[this.layer].buyables[this.id] = player[this.layer].buyables[this.id].max(target);
+   player[this.layer].buyables[this.id] = player[this.layer].buyables[this.id].max(target).min(player.B.Bblim)
 				},
    base(){   let bas = n(3)
    if (hasUpgrade('D',36)) bas = bas.add(upgradeEffect('D',36))
@@ -587,7 +637,7 @@ if(mult.log10().gte(400)) mult = n(10).pow(mult.log10().sub(400).pow(0.5).add(40
    if(hasChallenge('D',11)) bas = bas.mul(2)
    if(hasUpgrade('A',54)) bas=bas.pow(upgradeEffect('A',54))
    
-   if (inChallenge('E',12)) bas = n(2)
+   if (inChallenge('E',12)) bas = n(1)
    if (inChallenge('E',31)) bas = n(1.2)
    
    if(bas.gte(1e5)) bas=bas.div(1e5).pow(0.2).mul(1e5)//sc76
@@ -603,6 +653,7 @@ if(mult.log10().gte(400)) mult = n(10).pow(mult.log10().sub(400).pow(0.5).add(40
     let a = format(gba(this.layer,this.id))
     if(gba('A',12).gt(0)) a = a+"+"+format(buyableEffect('A',12))+"="+format(gba(this.layer,this.id).add(buyableEffect('A',12)))
    return "give B a x" + format(this.base()) + " mult <br>Cost: " + format(this.cost()) + " B<br>Amount: " + a  +"<br> Effect: x" + format(this.effect()) + " B" },
+   purchaseLimit() {return player.B.Bblim},
    unlocked() { return hasUpgrade('B',41) },
   },
   13: {
@@ -610,6 +661,7 @@ if(mult.log10().gte(400)) mult = n(10).pow(mult.log10().sub(400).pow(0.5).add(40
    baseCost() {
     let cost = n(1e33)
     if(hasUpgrade('A',65)) cost=n(1)
+    cost=cost.div(buyableEffect('E',24))
     return cost
    },
    cost(x=player[this.layer].buyables[this.id]) {
@@ -625,7 +677,7 @@ if(mult.log10().gte(400)) mult = n(10).pow(mult.log10().sub(400).pow(0.5).add(40
    if (!this.canAfford()) return;
    let tempBuy = player.B.points.div(this.baseCost()).max(0).max(1).log(2).root(1.2)
    let target = tempBuy.plus(1).floor();
-   player[this.layer].buyables[this.id] = player[this.layer].buyables[this.id].max(target);
+   player[this.layer].buyables[this.id] = player[this.layer].buyables[this.id].max(target).min(player.B.Bblim)
 				},
    effect(x=player[this.layer].buyables[this.id]) { 
    if(gba('A',12)) x=x.add(buyableEffect('A',12))
@@ -638,6 +690,7 @@ if(mult.log10().gte(400)) mult = n(10).pow(mult.log10().sub(400).pow(0.5).add(40
     let a = format(gba(this.layer,this.id))
     if(gba('A',12).gt(0)) a = a+"+"+format(buyableEffect('A',12))+"="+format(gba(this.layer,this.id).add(buyableEffect('A',12)))
    return "D6 effect base +" + format(this.effect()) + "<br>Cost: " + format(this.cost()) + " B<br>Amount: " + a },
+   purchaseLimit() {return player.B.Bblim},
    unlocked() { return hasUpgrade('B',42) },
   },
   21: {
@@ -645,6 +698,7 @@ if(mult.log10().gte(400)) mult = n(10).pow(mult.log10().sub(400).pow(0.5).add(40
    baseCost() {
     let cost = n(1e33)
     if(hasUpgrade('A',65)) cost=n(1)
+    cost=cost.div(buyableEffect('E',24))
     return cost
    },
    cost(x=player[this.layer].buyables[this.id]) {
@@ -660,7 +714,7 @@ if(mult.log10().gte(400)) mult = n(10).pow(mult.log10().sub(400).pow(0.5).add(40
    if (!this.canAfford()) return;
    let tempBuy = player.B.points.div(this.baseCost()).max(0).max(1).log(3).root(1.2)
    let target = tempBuy.plus(1).floor();
-   player[this.layer].buyables[this.id] = player[this.layer].buyables[this.id].max(target);
+   player[this.layer].buyables[this.id] = player[this.layer].buyables[this.id].max(target).min(player.B.Bblim)
 				},
 				base(){   let base = n(3)
 				if (hasUpgrade('D',36)&&hasUpgrade('B',42)) base = base.add(upgradeEffect('D',36))
@@ -681,6 +735,7 @@ if(mult.log10().gte(400)) mult = n(10).pow(mult.log10().sub(400).pow(0.5).add(40
     let a = format(gba(this.layer,this.id))
     if(gba('A',12).gt(0)) a = a+"+"+format(buyableEffect('A',12))+"="+format(gba(this.layer,this.id).add(buyableEffect('A',12)))
    return "give C a x" + format(this.base()) + " mult <br>Cost: " + format(this.cost()) + " B<br>Amount: " + a  +"<br> Effect: x" + format(this.effect()) + " C" },
+   purchaseLimit() {return player.B.Bblim},
    unlocked() { return hasUpgrade('B',42) }
   },
   22: {
@@ -688,6 +743,7 @@ if(mult.log10().gte(400)) mult = n(10).pow(mult.log10().sub(400).pow(0.5).add(40
    baseCost() {
     let cost = n(1e50)
     if(hasUpgrade('A',65)) cost=n(1)
+    cost=cost.div(buyableEffect('E',24))
     return cost
    },
    cost(x=player[this.layer].buyables[this.id]) {
@@ -703,7 +759,7 @@ if(mult.log10().gte(400)) mult = n(10).pow(mult.log10().sub(400).pow(0.5).add(40
    if (!this.canAfford()) return;
    let tempBuy = player.B.points.div(this.baseCost()).max(0).max(1).log(3).root(1.25)
    let target = tempBuy.plus(1).floor();
-   player[this.layer].buyables[this.id] = player[this.layer].buyables[this.id].max(target);
+   player[this.layer].buyables[this.id] = player[this.layer].buyables[this.id].max(target).min(player.B.Bblim)
 				},
 				base(){   let base = n(3)
 				if (hasUpgrade('D',36)&&hasUpgrade('B',46)) base = base.add(upgradeEffect('D',36))
@@ -723,6 +779,7 @@ if(mult.log10().gte(400)) mult = n(10).pow(mult.log10().sub(400).pow(0.5).add(40
     let a = format(gba(this.layer,this.id))
     if(gba('A',12).gt(0)) a = a+"+"+format(buyableEffect('A',12))+"="+format(gba(this.layer,this.id).add(buyableEffect('A',12)))
    return "give D a x" + format(this.base()) + " mult <br>Cost: " + format(this.cost()) + " B<br>Amount: " + a  +"<br> Effect: x" + format(this.effect()) + " D" },
+   purchaseLimit() {return player.B.Bblim},
    unlocked() { return hasUpgrade('B',45) }
   },
   23: {
@@ -730,6 +787,7 @@ if(mult.log10().gte(400)) mult = n(10).pow(mult.log10().sub(400).pow(0.5).add(40
    baseCost() {
     let cost = n(1e60)
     if(hasUpgrade('A',65)) cost=n(1)
+    cost=cost.div(buyableEffect('E',24))
     return cost
    },
    cost(x=player[this.layer].buyables[this.id]) {
@@ -745,7 +803,7 @@ if(mult.log10().gte(400)) mult = n(10).pow(mult.log10().sub(400).pow(0.5).add(40
    if (!this.canAfford()) return;
    let tempBuy = player.B.points.div(this.baseCost()).max(0).max(1).log(2).root(1.5)
    let target = tempBuy.plus(1).floor();
-   player[this.layer].buyables[this.id] = player[this.layer].buyables[this.id].max(target);
+   player[this.layer].buyables[this.id] = player[this.layer].buyables[this.id].max(target).min(player.B.Bblim)
 				},
 				base(){   let base = n(10)
 				if (hasUpgrade('D',36)&&hasUpgrade('A',56)) base = base.add(upgradeEffect('D',36))
@@ -766,6 +824,7 @@ if(mult.log10().gte(400)) mult = n(10).pow(mult.log10().sub(400).pow(0.5).add(40
     let a = format(gba(this.layer,this.id))
     if(gba('A',12).gt(0)) a = a+"+"+format(buyableEffect('A',12))+"="+format(gba(this.layer,this.id).add(buyableEffect('A',12)))
    return "give Points a x" + format(this.base()) + " mult <br>Cost: " + format(this.cost()) + " B<br>Amount: " + a  +"<br> Effect: x" + format(this.effect()) + " Points" },
+   purchaseLimit() {return player.B.Bblim},
    unlocked() { return hasUpgrade('B',51) }
   },
   }

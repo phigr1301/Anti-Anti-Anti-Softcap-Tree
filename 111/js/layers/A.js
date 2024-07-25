@@ -11,6 +11,7 @@ introBox: {
     startData() { return {
  unlocked: true,
 		points: new Decimal(0),
+		Ablim: new Decimal(3025),
     }},
     passiveGeneration(){
  let a_pg=0.5
@@ -31,6 +32,9 @@ introBox: {
  return new Decimal(1)
     },
     row: 0, 
+    update(diff) {
+     if(hasUpgrade('E',26)&&inChallenge('A',41)) player.A.challenges[41]=player.points.div("1e500").max(1).log(tmp.A.Ac7Req).add(10).max(player.A.challenges[41]).toNumber()
+    },
     hotkeys: [
  {key: "a", description: "A: Reset for A points", onPress(){if (canReset(this.layer)) doReset(this.layer)}},
     ],
@@ -55,13 +59,23 @@ introBox: {
  mult = mult.pow(hasUpgrade('B',53)?2:1)
  mult = mult.pow(hasUpgrade('B',73)?upgradeEffect('B',73):1)
  mult = mult.mul(buyableEffect("B",11))
- mult = mult.mul(buyableEffect("E",11))
+ if(inChallenge('E',11)) mult=mult.max(10).tetrate(0.1)
  if(mult.gte(2)) mult=mult.div(2).pow(0.5).mul(2)//sc3
  if(mult.gte(1e7)) mult=mult.div(1e7).pow(0.3).mul(1e7)//sc48
  if(mult.gte(1e9)) mult=mult.div(1e9).pow(0.3).mul(1e9)//sc59
  if(mult.gte(1e100)) mult=mult.div(1e100).pow(0.8).mul(1e100)//sc89
  if(mult.gte(1e250)) mult=mult.div(1e250).pow(0.8).mul(1e250)//sc99
+ if(mult.gte(1e300)) mult=mult.div(1e300).pow(0.8).mul(1e300)//sc101
+ if(mult.gte("1e400")) mult=mult.div("1e400").pow(0.8).mul("1e400")//sc137
  return mult
+    },
+    directMult() {
+     let mult = n(1)
+     mult = mult.mul(buyableEffect("E",11))
+     if(hasUpgrade('E',16)) mult=mult.mul(upgradeEffect('E',16)[0])
+     if(hasUpgrade('s',12)&&hasMilestone('E',6)) mult=mult.mul(upgradeEffect('s',12))
+     if (hasChallenge("E", 21)) mult=mult.mul(challengeEffect('E',21)[0])
+     return mult
     },
     microtabs: {
  stuff: {       
@@ -73,11 +87,11 @@ introBox: {
   content: ["challenges"]    },
      "Buyables": {
   unlocked() {return (hasUpgrade("B", 66))},
-  content: ["buyables"]    },
+  content: [["raw-html", () => `<h4 style="opacity:.5"><br>The purchase limit of A buyables is ` + format(player.A.Ablim)],"buyables"]    },
  }
     },
     tabFormat: [ ["infobox","introBox"],
- "main-display",
+ "main-display","resource-display",
  "prestige-button",
  ["microtabs", "stuff"],
  ["blank", "25px"],
@@ -88,6 +102,12 @@ introBox: {
    layers.A.buyables[12].buyMax()  ;
   }
   },
+    Ac7Req() {//after 10 completions
+    let req = n(1e50)
+    if(hasUpgrade('E',33)) req=n(1e30)
+    if(hasUpgrade('E',52)) req=req.pow(upgradeEffect('E',52))
+    return req
+    },
     upgrades: {
  11: {
      title:'A1',
@@ -260,7 +280,7 @@ introBox: {
   if(ef.gte(5)) ef=ef.div(5).pow(0.5).mul(5)//sc8
   if(ef.gte(1e10)) ef=ef.div(1e10).pow(0.1).mul(1e10)//sc30
   if(ef.gte(1e20)) ef=ef.div(1e20).pow(0.1).mul(1e20)//sc50
-  return ef
+  return ef.max(1)
      },
      effectDisplay() { return format(this.effect())+"x" }, 
  },
@@ -469,10 +489,11 @@ introBox: {
      completionLimit() {
       let lim = 5
       if(hasUpgrade('B',75)) lim = 10
+      if(hasUpgrade('E',26)) lim = 1e308
       return lim
      },
      challengeDescription: function() {
-  return "Points gain ^^0.1.<br> Completion: " +challengeCompletions("A", 41) + "/"+this.completionLimit()},
+  return "Points gain ^^0.1.<br> Completion: " +format(challengeCompletions("A", 41)) + "/"+this.completionLimit()},
      unlocked() { return (hasMilestone("B", 4))},
      goal(){
   if (challengeCompletions("A", 41) == 0) return Decimal.pow(10,32);
@@ -480,16 +501,19 @@ introBox: {
   if (challengeCompletions("A", 41) == 2) return Decimal.pow(10,41).mul(2);
   if (challengeCompletions("A", 41) == 3) return Decimal.pow(10,44);
   if (challengeCompletions("A", 41) == 4) return Decimal.pow(10,54);
-  if (challengeCompletions("A", 41) == 5 && hasUpgrade('B',75)) return Decimal.pow(10,111);
-  if (challengeCompletions("A", 41) == 5 && !hasUpgrade('B',75)) return Decimal.pow(10,1/0);
+  if (challengeCompletions("A", 41) == 5 && hasUpgrade('B',75)) return n(1e111)
+  if (challengeCompletions("A", 41) == 5 && !hasUpgrade('B',75)) return n(1/0);
   if (challengeCompletions("A", 41) == 6) return Decimal.pow(10,121);
   if (challengeCompletions("A", 41) == 7) return Decimal.pow(10,150);
   if (challengeCompletions("A", 41) == 8) return Decimal.pow(10,320);
   if (challengeCompletions("A", 41) == 9) return Decimal.pow(10,404);
-  if (challengeCompletions("A", 41) == 10) return Decimal.pow(10,1/0);
+  if (challengeCompletions("A", 41) >= 10) return n(1/0)
      },     
-     goalDescription:  function() {return format(this.goal())+' points'},
-     canComplete() {return player.points.gte(this.goal())},
+     canComplete() {return !hasUpgrade('E',26)},
+     goalDescription:  function() {
+      if (challengeCompletions("A", 41) >= 10 && hasUpgrade('E',26)) return format(tmp.A.Ac7Req.pow(challengeCompletions('A',41)-10).mul("1e500"))
+      else return format(this.goal())+' points'},
+     canComplete() {return player.points.gte(this.goal())&&challengeCompletions('A',41)<10},
      rewardDescription: "Boost Ab2 Effect.",
      rewardEffect() {
   let ef = n(1).add(n(challengeCompletions('A',41)).mul(0.05))
@@ -505,6 +529,7 @@ introBox: {
    baseCost() {
     let cost = n(1e125)
     if(hasUpgrade('A',66)) cost=n(1)
+    if(hasUpgrade('B',83)) cost=cost.div(buyableEffect('E',24))
     return cost
    },
    cost(x=player[this.layer].buyables[this.id]) {
@@ -519,7 +544,7 @@ introBox: {
    if (!this.canAfford()) return;
 			 	let tempBuy = player.A.points.div(this.baseCost()).max(1).log(2).root(1.05)
    let target = tempBuy.plus(1).floor();
-   player[this.layer].buyables[this.id] = player[this.layer].buyables[this.id].max(target);
+   player[this.layer].buyables[this.id] = player[this.layer].buyables[this.id].max(target).min(player.A.Ablim)
 				},
    base(){   let base = n(100)
    if(hasUpgrade('B',71)) base=base.mul(10)
@@ -531,9 +556,11 @@ introBox: {
    if(hasUpgrade('A',64)) ef = ef.mul(upgradeEffect('A',64))
    if(ef.gte(1e200)) ef=ef.div(1e200).pow(0.25).mul(1e200)//sc85
    if(ef.log10().gte(500)) ef = n(10).pow(ef.log10().sub(500).pow(0.5).add(500))//sc90
+   if(hasUpgrade('E',34)) ef=ef.pow(upgradeEffect('E',34))
    return ef},
    display() { 
    return "Bb1,2,3,4 x"+ format(this.base()) + " effect<br>Cost: " + format(this.cost()) + " A<br>Amount: " + player[this.layer].buyables[this.id]  +"<br>  Effect: x" + format(this.effect()) + " effect" },
+   purchaseLimit() {return player.A.Ablim},
    unlocked() { return hasUpgrade('B',66) }
   },
   12: {
@@ -541,6 +568,8 @@ introBox: {
    baseCost() {
     let cost = n(1e167)
     if(hasUpgrade('A',66)) cost=n(1)
+    if(hasUpgrade('B',83)) cost=cost.div(buyableEffect('E',24))
+    if(hasUpgrade('E',66)) cost=cost.div(upgradeEffect('E',66))
     return cost
    },
    cost(x=player[this.layer].buyables[this.id]) {
@@ -555,7 +584,7 @@ introBox: {
    if (!this.canAfford()) return;
 			 	let tempBuy = player.A.points.div(this.baseCost()).max(1).log(3).root(1.1)
    let target = tempBuy.plus(1).floor();
-   player[this.layer].buyables[this.id] = player[this.layer].buyables[this.id].max(target);
+   player[this.layer].buyables[this.id] = player[this.layer].buyables[this.id].max(target).min(player.A.Ablim)
 				},
 			base() {
 			 let base=n(1)
@@ -572,6 +601,7 @@ introBox: {
    return ef},
    display() { 
    return "All Bbs' Effective Amount +"+ format(this.base()) + "<br>Cost: " + format(this.cost()) + " A<br>Amount: " + player[this.layer].buyables[this.id]  +"<br>  Effect: +" + format(this.effect()) + " Amount" },
+   purchaseLimit() {return player.A.Ablim},
    unlocked() { return hasMilestone('B',4) }
   },
     },
