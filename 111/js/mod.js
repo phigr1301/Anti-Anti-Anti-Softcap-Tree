@@ -13,15 +13,19 @@ let modInfo = {
 
 // Set your version in num and name
 let VERSION = {
-	num: "0.2",
-	name: "D finish",
+	num: "0.25",
+	name: "E half-finish",
 }
 
 let changelog = `<h1>Changelog:</h1><br>
+<h2>v0.25 2024/7/17-2024/7/25</h2><br>
+<h3>- Rebalanced early-E with more upgrades and contents.
+<br>- Added many new features.<br>
+<br>Endgame: 6.66e66 E (150 softcaps)</h3>
 <h2>v0.2 2024/7/11-2024/7/16</h2><br>
 <h3>- Rebalanced D with more upgrades and contents.
 <br>- Added D challenges, A buyables and many new features.
-<br>Endgame: 1e525 B (1e131 D)</h3>
+<br>Endgame: 1e525 B (100 softcaps)</h3>
 <h2>v0.1 2024/7/9-2024/7/10</h2><br>
 <h3>- Rebalanced A, B and C with more upgrades and contents.
 <br>- Added Softcap Layer.
@@ -70,9 +74,6 @@ function getPointGen() {
 	gain = gain.mul(hasUpgrade("D",21)?upgradeEffect("D",21):1)
 	gain = gain.mul(hasUpgrade("D",32)?upgradeEffect("D",32):1)
 	gain = gain.mul(hasUpgrade("E",11)?upgradeEffect("E",11):1)
-	gain = gain.mul(hasUpgrade("E",12)?upgradeEffect("E",12):1)
-	gain = gain.mul(hasUpgrade("E",22)?upgradeEffect("E",22):1)
-	gain = gain.mul(hasUpgrade("C",33)?upgradeEffect("C",33):1)
 	gain = gain.mul(hasUpgrade("D",43)?upgradeEffect("D",43):1)
 	gain = gain.mul(hasUpgrade("E",85)?upgradeEffect("E",85):1)
 	gain = gain.mul(hasUpgrade("E",104)?upgradeEffect("E",104):1)
@@ -83,7 +84,6 @@ function getPointGen() {
 	if (inChallenge("A", 31))  gain = gain.pow(0.15)
 	if (inChallenge("C", 11))  gain = gain.pow(0.45)
 	if (hasChallenge("D", 21))  gain = gain.pow(1.1)
-	if (inChallenge("E", 22))  gain = gain.pow(player.points.add(10).log(10).pow(-0.06))
 	if (inChallenge("E", 32))  gain = gain.pow(player.E.Em.add(10).log(10).pow(-0.2))
 	if (inChallenge("E", 42))  gain = gain.pow(player.points.add(10).log(10).pow(-0.12))
 
@@ -92,8 +92,6 @@ function getPointGen() {
 	if (hasChallenge("A", 31))  gain = gain.mul(2e5)
 	if (hasChallenge("C", 11))  gain = gain.mul(1000)
 	if (hasChallenge("C", 12))  gain = gain.mul(8000)
-	if (hasChallenge("E", 21))  gain = gain.mul(challengeEffect('E',21))
-	if (hasChallenge("E", 22))  gain = gain.mul(challengeEffect('E',22))
 	
 if(inChallenge('A',32)) gain=gain.log10()
 if(inChallenge('A',41)) gain=gain.tetrate(0.1)
@@ -124,20 +122,27 @@ var shitDown=false
 // Display extra things at the top of the page
 var displayThings = [
 	function() {
-	 let a="Current endgame: 1e535 B<br> next layer requires 1e535 B."
-	 if(isEndgame()) a=a+"<br>You are past endgame and the game is paused."
+	 let a="Current endgame: 6.66e66 E"
+	 if(isEndgame()) a=a+"<br>You are past endgame! E is capped at 6.66e66."
 	 if(gcs('t',12)) a=a+"<br>You have played the game for "+formatTime(player.timePlayed)+"."
 	 if(gcs('t',21)) a=a+"<br>There are "+format(player.softcap)+" softcaps in all now."
 	 if(gcs('t',22)) a=a+"<br>A's GainMult: "+format(tmp.A.gainMult)
 	 if(gcs('t',23)) a=a+"<br>B's GainMult: "+format(tmp.B.gainMult)
 	 if(gcs('t',24)) a=a+"<br>C's GainMult: "+format(tmp.C.gainMult)
 	 if(gcs('t',25)) a=a+"<br>D's GainMult: "+format(tmp.D.gainMult)
+	 if(gcs('t',26)) a=a+"<br>E's GainMult: "+format(tmp.E.gainMult)
+	 if(gcs('t',31)) a=a+"<br>Softcap Point: "+format(player.s.points)
+	 if(gcs('t',32)) a=a+"<br>A's DirectMult: "+format(tmp.A.directMult)
+	 if(gcs('t',33)) a=a+"<br>B's DirectMult: "+format(tmp.B.directMult)
+	 if(gcs('t',34)) a=a+"<br>C's DirectMult: "+format(tmp.C.directMult)
+	 if(gcs('t',35)) a=a+"<br>D's DirectMult: "+format(tmp.D.directMult)
+	 if(gcs('t',36)) a=a+"<br>E's DirectMult: "+format(tmp.E.directMult)
 	 return a
 	},
 ]
 // Determines when the game "ends"
 function isEndgame() {
-	return player.B.points.gte("1e535")
+	return player.E.points.gte("6.66e66")
 }
 
 //<br> bilibili: @一只新手Up
@@ -270,6 +275,56 @@ if(tmp.B.gainMult.gte("1e400")) s=s.add(1)
 if(getPointGen().gte("1e500")) s=s.add(1)
 if(tmp.A.gainMult.gte(1e250)) s=s.add(1)
 if(upgradeEffect('B',11).gte(1e100)&&hasUpgrade('B',11)) s=s.add(1)
+if(tmp.A.gainMult.gte(1e300)) s=s.add(1)
+if(upgradeEffect('E',12).gte(10)&&hasUpgrade('E',12)) s=s.add(1)
+if(upgradeEffect('E',15).gte(2)&&hasUpgrade('E',15)) s=s.add(1)
+if(upgradeEffect('E',23).gte(10)&&hasUpgrade('E',23)) s=s.add(1)
+if(upgradeEffect('E',14).gte(2)&&hasUpgrade('E',14)) s=s.add(1)
+if(upgradeEffect('E',13).gte(2)&&hasUpgrade('E',13)) s=s.add(1)
+if(upgradeEffect('E',16)[0].gte(1e4)&&hasUpgrade('E',16)) s=s.add(1)
+if(upgradeEffect('E',16)[1].gte(1e4)&&hasUpgrade('E',16)) s=s.add(1)
+if(upgradeEffect('E',22)[0].gte(1e4)&&hasUpgrade('E',22)) s=s.add(1)
+if(upgradeEffect('E',22)[1].gte(1e4)&&hasUpgrade('E',22)) s=s.add(1)
+if(upgradeEffect('E',32).gte(2)&&hasUpgrade('E',32)) s=s.add(1)
+if(upgradeEffect('C',32).gte(2)&&hasUpgrade('C',32)) s=s.add(1)
+if(tmp.E.gainMult.gte(1e5)) s=s.add(1)
+if(upgradeEffect('E',31).gte(1e9)&&hasUpgrade('E',31)) s=s.add(1)
+if(upgradeEffect('C',33)[0].gte(2)&&hasUpgrade('C',33)) s=s.add(1)
+if(upgradeEffect('C',33)[1].gte(2)&&hasUpgrade('C',33)) s=s.add(1)
+if(upgradeEffect('E',14).gte(4)&&hasUpgrade('E',14)) s=s.add(1)
+if(upgradeEffect('E',26).gte(5)&&hasUpgrade('E',26)) s=s.add(1)
+if(upgradeEffect('E',35).gte(2)&&hasUpgrade('E',26)) s=s.add(1)
+if(challengeEffect('E',12).gte(2)&&hasChallenge('E',12)) s=s.add(1)
+if(upgradeEffect('E',36).gte(4)&&hasUpgrade('E',36)) s=s.add(1)
+if(upgradeEffect('E',13).gte(5)&&hasUpgrade('E',13)) s=s.add(1)
+if(challengeEffect('E',12).gte(10)&&hasChallenge('E',12)) s=s.add(1)
+if(upgradeEffect('D',11).gte("ee7")&&hasUpgrade('D',11)) s=s.add(1)
+if(player.s.points.gte(2.5e4)) s=s.add(1)
+if(upgradeEffect('s',31).gte("2")&&hasUpgrade('s',31)) s=s.add(1)
+if(upgradeEffect('E',12).gte(1000)&&hasUpgrade('E',12)) s=s.add(1)
+if(buyableEffect('E',21).gte(1e15)) s=s.add(1)
+if(buyableEffect('E',14).gte(0.03)) s=s.add(1)
+if(upgradeEffect('E',51).gte(100)&&hasUpgrade('E',51)) s=s.add(1)
+if(tmp.E.gainMult.gte(1e10)) s=s.add(1)
+if(upgradeEffect('E',26).gte(10)&&hasUpgrade('E',26)) s=s.add(1)
+if(upgradeEffect('s',31).gte(5)&&hasUpgrade('s',31)) s=s.add(1)
+if(buyableEffect('E',11).gte(1e40)) s=s.add(1)
+if(buyableEffect('E',12).gte(1e40)) s=s.add(1)
+if(upgradeEffect('E',11).gte("ee5")&&hasUpgrade('E',11)) s=s.add(1)
+if(tmp.A.gainMult.gte("1e400")) s=s.add(1)
+if(upgradeEffect('E',11).gte("e5e5")&&hasUpgrade('E',11)) s=s.add(1)
+if(upgradeEffect('E',56).gte(2)&&hasUpgrade('E',56)) s=s.add(1)
+if(upgradeEffect('E',54).gte(1e10)&&hasUpgrade('E',54)) s=s.add(1)
+if(upgradeEffect('E',61).gte(5)&&hasUpgrade('E',61)) s=s.add(1)
+if(challengeEffect('E',21)[0].gte(1e25)&&hasChallenge('E',21)) s=s.add(1)
+if(challengeEffect('E',21)[1].gte(1e25)&&hasChallenge('E',21)) s=s.add(1)
+if(challengeEffect('E',22)[0].gte(1e15)&&hasChallenge('E',22)) s=s.add(1)
+if(challengeEffect('E',22)[1].gte(1e10)&&hasChallenge('E',22)) s=s.add(1)
+if(upgradeEffect('B',84).gte(10)&&hasUpgrade('B',84)) s=s.add(1)
+if(upgradeEffect('E',61).gte(15)&&hasUpgrade('E',61)) s=s.add(1)
+if(upgradeEffect('E',63).gte(7.5)&&hasUpgrade('E',63)) s=s.add(1)
+if(upgradeEffect('E',65).gte(100)&&hasUpgrade('E',65)) s=s.add(1)
+if(upgradeEffect('E',51).gte(1e4)&&hasUpgrade('E',51)) s=s.add(1)
 if(a) s=s.add(1)
 return s
 }
