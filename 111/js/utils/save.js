@@ -1,7 +1,7 @@
 var formatsave = {
   encoder: new TextEncoder(),
   decoder: new TextDecoder(),
-  startString: 'AASTSaveFile',
+  startString: 'AAASTSaveFileFormat',
   endString: 'EndOfSaveFile',
   steps: [{
       encode: JSON.stringify,
