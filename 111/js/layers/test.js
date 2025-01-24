@@ -19,7 +19,7 @@ addLayer("t", {
  devSpeedCal() {
   let dev=n(1)
   if(gcs('t',11)) dev=n(0)
-  //if(isEndgame()) dev=n(0)
+  if(isEndgame()) dev=n(0)
   return dev
  },
  update(diff) {

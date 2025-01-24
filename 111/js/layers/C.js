@@ -15,7 +15,8 @@ introBox: {
   passiveGeneration(){  let c_pg=1
   if(hasMilestone("D", 1)) c_pg=c_pg+1
   if (hasMilestone("D", 2))  c_pg=c_pg*10
-  if (hasMilestone("B", 5))  c_pg=c_pg*100
+	  if (hasMilestone("B", 5)) c_pg = c_pg * 100
+	  if (hasUpgrade("AS", 13)) c_pg = c_pg * 10
   return (hasUpgrade("C", 21))?c_pg:0},
   color: "#A73E16",
   requires: new Decimal(1e12), 
@@ -43,10 +44,11 @@ introBox: {
   mult = mult.mul(hasUpgrade("s",16)?upgradeEffect('s',16):1)
   mult = mult.mul(hasUpgrade("D",26)?upgradeEffect('D',26):1)
   mult = mult.mul(hasUpgrade("E",95)?upgradeEffect("E",95):1)
-  mult = mult.mul(buyableEffect("B",21))
+	  mult = mult.mul(buyableEffect("B", 21))
+	  mult = mult.mul(hasUpgrade('AS', 13) ? 2 : 1)
   mult = mult.pow(hasUpgrade('A',45)?1.5:1)
   mult = mult.pow(hasUpgrade('A',46)?1.5:1)
-  mult = mult.pow(hasUpgrade('C',24)?1.5:1)
+	  mult = mult.pow(hasUpgrade('C', 24) ? 1.5 : 1)
   
   if(mult.gte(10)) mult=mult.div(10).pow(0.5).mul(10)//sc33
   if(mult.gte(1e5)) mult=mult.div(1e5).pow(0.2).mul(1e5)//sc41
@@ -81,8 +83,8 @@ introBox: {
   done() {return player[this.layer].total.gte('1e6')}, 
   effectDescription: "10x A passive,2x B passive.",
   },
-  3: {requirementDescription: "5e11 total C",
-  done() {return player[this.layer].total.gte('5e11')}, 
+  3: {requirementDescription: "1e14 total C",
+  done() {return player[this.layer].total.gte('1e14')}, 
   effectDescription: "1000x points, 1000x B passive,unlock D.",
   },
   },
@@ -265,19 +267,19 @@ introBox: {
   completionLimit: 1,
   challengeDescription() {return "Reset your points and points ^0.45,C1-C10 are disabled."},
   unlocked() { return (hasUpgrade("D",15))},
-  goalDescription: '5e18 points.',
+  goalDescription: '5e23 points.',
   onEnter() {player.points=n(0)},
-  canComplete() {return player.points.gte(5e18)},
+  canComplete() {return player.points.gte(5e23)},
   rewardDescription: "x1000 points and softcap points ^1.1, unlock more A upgrades.",
   },
   12: {
   name: "Cc2",
   completionLimit: 1,
-  challengeDescription() {return "Reset your points and D1-D5 are disabled."},
+  challengeDescription() {return "Reset your points and points ^0.05,D1-D5 are disabled."},
   unlocked() { return (hasUpgrade("A",52))},
   onEnter() {player.points=n(0)},
   goalDescription: '1e42 points.',
-  canComplete() {return player.points.gte(1e42)},
+  canComplete() {return player.points.gte(1e12)},
   rewardDescription: "x8000 points,A ^1.025.",
   },
   }

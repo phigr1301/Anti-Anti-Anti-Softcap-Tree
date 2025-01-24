@@ -2,7 +2,8 @@ addLayer("A", {
  infoboxes: {
 introBox: {
   title: "Welcome!",
-  body(){return "Welcome to Anti-Anti-Softcap Tree (AAST)! This is a mod based on Anti-Softcap Tree. Instead of No-Softcaps, there will be a lot of softcaps in this mod, as well as timewalls."},
+         body() {
+             return "Welcome to Anti - Anti - Anti - Softcap Tree(AAAST)! This is a mod based on Anti - Anti - Softcap Tree, which is a mod based on Anti - Softcap Tree.This mod will not delete softcaps, but it will be more upgrades to fight against softcaps."},
         },
 },
     name: "A", 
@@ -40,7 +41,8 @@ introBox: {
     ],
     layerShown(){return true},
     gainMult() { 
- mult = new Decimal(1)
+        mult = new Decimal(1)
+        mult = mult.mul(hasUpgrade('AS', 12) ? 5 : 1)
  mult = mult.mul(hasUpgrade(this.layer,22)?3:1)
  mult = mult.mul(hasChallenge("A", 22)?20:1)
  mult = mult.mul(hasChallenge("A", 31)?20:1)
@@ -60,7 +62,7 @@ introBox: {
  mult = mult.pow(hasUpgrade('B',73)?upgradeEffect('B',73):1)
  mult = mult.mul(buyableEffect("B",11))
  if(inChallenge('E',11)) mult=mult.max(10).tetrate(0.1)
- if(mult.gte(2)) mult=mult.div(2).pow(0.5).mul(2)//sc3
+ if(mult.gte(2)) mult=mult.div(2).pow(hasUpgrade('AS',11)?0.65:0.5).mul(2)//sc3
  if(mult.gte(1e7)) mult=mult.div(1e7).pow(0.3).mul(1e7)//sc48
  if(mult.gte(1e9)) mult=mult.div(1e9).pow(0.3).mul(1e9)//sc59
  if(mult.gte(1e100)) mult=mult.div(1e100).pow(0.8).mul(1e100)//sc89
@@ -127,11 +129,12 @@ introBox: {
   if(hasUpgrade("A",41)) ef=ef.mul(1e10)
   if(hasUpgrade("A",43)) ef=ef.mul(5e20)
   if(hasUpgrade("A",45)) ef=ef.mul(1e100)
-  if(hasUpgrade("A",46)) ef=ef.mul('1e1000')
+         if (hasUpgrade("A", 46)) ef = ef.mul('1e1000')
+         if (hasUpgrade("A", 47)) ef = ef.mul('1e10000')
   if(hasUpgrade("A",54)) ef=ef.mul(3e4)
   
-  if(ef.gte(2)) ef=ef.div(2).pow(0.5).mul(2)//sc1
-  if(ef.gte(10)) ef=ef.div(10).pow(0.6).mul(10)//sc4
+         if (ef.gte(2)) ef = ef.div(2).pow(hasUpgrade('AS', 11) ? 0.75 : 0.5).mul(2)//sc1
+         if (ef.gte(10)) ef = ef.div(10).pow(hasUpgrade('AS', 12) ? 0.75 : 0.6).mul(10)//sc4
   if(ef.gte(1e10)) ef=ef.div(1e10).pow(0.7).mul(1e10)//sc32
   if(ef.gte(1e12)) ef=ef.div(1e12).pow(0.8).mul(1e12)//sc35
   if(ef.gte(1e25)) ef=ef.div(1e25).pow(0.9).mul(1e25)//sc36
@@ -171,7 +174,7 @@ introBox: {
   let ef= player.points.pow(efa5).add(1)
   if (inChallenge("A", 22))  ef = ef.pow(-2)
   if (hasUpgrade('s',14)) ef = ef.pow(upgradeEffect('s',14))
-  if(ef.gte(2)) ef=ef.div(2).pow(0.5).mul(2)//sc2
+         if (ef.gte(2)) ef = ef.div(2).pow(hasUpgrade('AS', 12) ? 0.8 : 0.5).mul(2)//sc2
   if(ef.gte(100)) ef=ef.div(100).pow(0.5).mul(100)//sc19
   if(ef.gte(1e6)) ef=ef.div(1e6).pow(0.5).mul(1e6)//sc23
   return ef
@@ -183,7 +186,13 @@ introBox: {
      description: "3x points.",
      cost:new Decimal(200),
      unlocked() { return (hasUpgrade(this.layer, 25))},
- },
+        },
+        17: {
+            title: 'A5.75',
+            description: "sc9 is weaker.",
+            cost: new Decimal(1000),
+            unlocked() { return (hasUpgrade('AS', 13)) },
+        },
  21: {
      title:'A6',
      description: "3x points.",
@@ -241,7 +250,13 @@ introBox: {
      description: "4x points.",
      cost:new Decimal(400),
      unlocked() { return (hasUpgrade(this.layer, 25))},
- },
+        },
+        27: {
+            title: 'A10.75',
+            description: "sc14 is weaker.",
+            cost: new Decimal('1e5'),
+            unlocked() { return (hasUpgrade('AS', 13)) },
+        },
  31: {
      title:'A11',
      description: "A9 x5.",
@@ -289,7 +304,13 @@ introBox: {
      description: "A15 ^1.5",
      cost:new Decimal('5e3'),
      unlocked() { return (hasUpgrade(this.layer, 35))},
- },
+        },
+        37: {
+            title: 'A15.75',
+            description: "sc21 is weaker.",
+            cost: new Decimal('1e8'),
+            unlocked() { return (hasUpgrade('AS', 13)) },
+        },
  41: {
      title:'A16',
      description: "1e10x points.",
@@ -325,7 +346,13 @@ introBox: {
      description: "1e1000x points,C ^1.5.",
      cost:new Decimal('5e21'),
      unlocked() { return (hasUpgrade(this.layer, 45))},
- },
+        },
+        47: {
+            title: 'A20.75',
+            description: "1e10000x points.",
+            cost: new Decimal('1e31'),
+            unlocked() { return (hasUpgrade('AS', 13)) },
+        },
  51: {
      title:'A21',
      description: "A ^1.1.",
@@ -435,8 +462,8 @@ introBox: {
      completionLimit: 1,
      challengeDescription() {return "points ^0.75"},
      unlocked() { return (hasUpgrade("B", 25))},
-     goalDescription: '2.5e5 points /sec',
-     canComplete() {return getPointGen().gte('2.5e5')},
+     goalDescription: '1e6 points /sec',
+     canComplete() {return getPointGen().gte('1e6')},
      rewardDescription: "A and B ^1.1.",
  },
  12: {
@@ -453,8 +480,8 @@ introBox: {
      completionLimit: 1,
      challengeDescription() {return "points ^0.5"},
      unlocked() { return (hasUpgrade("B", 32))},
-     goalDescription: '1.35e5 points /sec',
-     canComplete() {return getPointGen().gte('1.35e5')},
+     goalDescription: '4e5 points /sec',
+     canComplete() {return getPointGen().gte('4e5')},
      rewardDescription: "50x points and 10x B.",
  },
  22: {
@@ -471,8 +498,8 @@ introBox: {
      completionLimit: 1,
      challengeDescription() {return "points ^0.15 and A5/A9 are disabled"},
      unlocked() { return (hasUpgrade("C", 15))},
-     goalDescription: '7.5e5 points /sec',
-     canComplete() {return getPointGen().gte(7.5e5)},
+     goalDescription: '1.25e6 points /sec',
+     canComplete() {return getPointGen().gte(1.25e6)},
      rewardDescription: "2e5x points,20x A,2x C.",
  },
  32: {
