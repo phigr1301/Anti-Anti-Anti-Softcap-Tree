@@ -1,37 +1,28 @@
 let modInfo = {
-	name: "Anti-Anti-Softcap tree",
-	id: "AASC",
-	author: "QqQe308",
+	name: "Anti-Anti-Anti-Softcap tree",
+	id: "AAASCre",
+	author: "Anti-AntiDim19728",
 	pointsName: "points",
-	modFiles: ["layers/A.js", "layers/B.js","layers/C.js","layers/D.js","layers/E.js","layers/ach.js","layers/test.js","layers/softcaps.js","tree.js",],
+	modFiles: ["layers/A.js", "layers/B.js", "layers/C.js", "layers/D.js", "layers/E.js", "layers/ach.js", "layers/test.js", "layers/softcaps.js", "layers/AS.js","tree.js",],
 
-	discordName: "BiliBili link",
-	discordLink: "https://b23.tv/Hlg9D5u",
+	discordName: "function(){return \"Nothing here\"}",
+	discordLink: "AntiDim19728",
 	initialStartPoints: new Decimal (10), // Used for hard resets and new players
 	offlineLimit: 168,  // In hours
 }
 
 // Set your version in num and name
 let VERSION = {
-	num: "0.25",
-	name: "E half-finish",
+	num: "0.0.0.1",
+	name: "Rebalanced?",
 }
 
 let changelog = `<h1>Changelog:</h1><br>
-<h2>v0.25 2024/7/17-2024/7/25</h2><br>
-<h3>- Rebalanced early-E with more upgrades and contents.
-<br>- Added many new features.<br>
-<br>Endgame: 6.66e66 E (150 softcaps)</h3>
-<h2>v0.2 2024/7/11-2024/7/16</h2><br>
-<h3>- Rebalanced D with more upgrades and contents.
-<br>- Added D challenges, A buyables and many new features.
-<br>Endgame: 1e525 B (100 softcaps)</h3>
-<h2>v0.1 2024/7/9-2024/7/10</h2><br>
-<h3>- Rebalanced A, B and C with more upgrades and contents.
-<br>- Added Softcap Layer.
-<br>- Added Test and some Qol contents.
+<h2>v0.0.0.1 2025/1/23-2025/1/24</h2><br>
+<h3>- Rebalanced to D10.
+<br>- Added AS Layer.
 <br>- The first release of this mod.
-<br>Endgame: 1e12 C</h3>
+<br>Endgame: upgrade D10</h3>
 `
 
 let winText = `Congratulations! You have reached the end and beaten this game, but for now...`
@@ -55,6 +46,7 @@ function getPointGen() {
 		return new Decimal(0)
         
 	let gain = new Decimal(1)
+	gain = gain.mul(hasUpgrade("AS", 12) ? 3 : 1)
 	gain = gain.mul(hasUpgrade("A",11)?upgradeEffect("A",11):1)
 	gain = gain.mul(hasUpgrade("A",15)?upgradeEffect("A",15):1)
 	gain = gain.mul(hasUpgrade("A",24)?upgradeEffect("A",24):1)
@@ -82,7 +74,8 @@ function getPointGen() {
 	if (inChallenge("A", 11))  gain = gain.pow(0.75)
 	if (inChallenge("A", 21))  gain = gain.pow(0.5)
 	if (inChallenge("A", 31))  gain = gain.pow(0.15)
-	if (inChallenge("C", 11))  gain = gain.pow(0.45)
+	if (inChallenge("C", 11)) gain = gain.pow(0.45)
+	if (inChallenge("C", 12)) gain = gain.pow(0.05)
 	if (hasChallenge("D", 21))  gain = gain.pow(1.1)
 	if (inChallenge("E", 32))  gain = gain.pow(player.E.Em.add(10).log(10).pow(-0.2))
 	if (inChallenge("E", 42))  gain = gain.pow(player.points.add(10).log(10).pow(-0.12))
@@ -98,9 +91,9 @@ if(inChallenge('A',41)) gain=gain.tetrate(0.1)
 if(inChallenge('D',21)) gain=gain.slog()
 if(inChallenge('D',22)) gain=n(0)
 
-if(gain.gte(1e4)) gain=gain.div(1e4).pow(0.5).mul(1e4)//sc9
-if(gain.gte(1e6)) gain=gain.div(1e6).pow(0.6).mul(1e6)//sc14
-if(gain.gte(1e8)) gain=gain.div(1e8).pow(0.7).mul(1e8)//sc21
+if(gain.gte(1e4)) gain=gain.div(1e4).pow(hasUpgrade('A',17)?0.6:0.5).mul(1e4)//sc9
+	if (gain.gte(1e6)) gain = gain.div(1e6).pow(hasUpgrade('A', 27) ? 0.65 : 0.6).mul(1e6)//sc14
+	if (gain.gte(1e8)) gain = gain.div(1e8).pow(hasUpgrade('A', 37) ? 0.72 : 0.7).mul(1e8)//sc21
 if(gain.gte(1e10)) gain=gain.div(1e10).pow(0.8).mul(1e10)//sc24
 if(gain.gte(1e35)) gain=gain.div(1e35).pow(0.9).mul(1e35)//sc43
 if(gain.max(1).log10().gte(100)) gain=n(10).pow(gain.log10().sub(100).pow(0.8).add(100))//sc72
@@ -122,8 +115,8 @@ var shitDown=false
 // Display extra things at the top of the page
 var displayThings = [
 	function() {
-	 let a="Current endgame: 6.66e66 E"
-	 if(isEndgame()) a=a+"<br>You are past endgame! E is capped at 6.66e66."
+	 let a="Current endgame: D10"
+	 if(isEndgame()) a=a+"<br>You are past endgame! Dev speed is capped at 0.00x."
 	 if(gcs('t',12)) a=a+"<br>You have played the game for "+formatTime(player.timePlayed)+"."
 	 if(gcs('t',21)) a=a+"<br>There are "+format(player.softcap)+" softcaps in all now."
 	 if(gcs('t',22)) a=a+"<br>A's GainMult: "+format(tmp.A.gainMult)
@@ -142,10 +135,9 @@ var displayThings = [
 ]
 // Determines when the game "ends"
 function isEndgame() {
-	return player.E.points.gte("6.66e66")
+	return hasUpgrade('D',25)
 }
 
-//<br> bilibili: @一只新手Up
 
 // Less important things beyond this point!
 
